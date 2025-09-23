@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -233,7 +233,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_0
+      name: mario_left
       rect:
         serializedVersion: 2
         x: 181
@@ -408,6 +408,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: mario_right
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 172
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edd2d8c1526ac1c4b827f0c71825ed86
+      internalID: 561492509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -429,12 +451,13 @@ TextureImporter:
       mario_jump_3: -966824536
       mario_jump_4: 1773205587
       mario_jump_5: -136168589
-      mario_move_0: 1815855729
+      mario_left: 1815855729
       mario_move_1: -1682538759
       mario_move_2: 1733558698
       mario_move_3: 1838711901
       mario_move_4: -1836170299
       mario_move_5: -1993299241
+      mario_right: 561492509
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
