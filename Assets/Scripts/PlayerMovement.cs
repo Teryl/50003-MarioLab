@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public GameObject enemies;
 
+    public JumpOverGoomba jumpOverGoomba;
+
 
     void Start()
     {
@@ -155,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
         // }
 
     }
-    
+
     public void RestartButtonCallback(int input)
     {
         Debug.Log("Restart!");
@@ -179,5 +181,7 @@ public class PlayerMovement : MonoBehaviour
         {
             eachChild.transform.localPosition = eachChild.GetComponent<EnemyMovement>().startPosition;
         }
+        // reset score
+        jumpOverGoomba.score = 0;
     }
 }
