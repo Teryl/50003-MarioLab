@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     public JumpOverGoomba jumpOverGoomba;
     public GameObject GameOverUI;
+    public TextMeshProUGUI finalScore;
 
     private bool onGround = true;
     private float originalGravityScale;
@@ -54,7 +55,9 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Game Over!");
             Time.timeScale = 0.0f;
+            finalScore.text = "Score: " + jumpOverGoomba.score.ToString();
             GameOverUI.SetActive(true);
+            scoreText.text = "";
         }
     }
 
@@ -63,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Restart!");
         ResetGame();
         Time.timeScale = 1.0f;
+
     }
 
     private void ResetGame()
@@ -81,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
             eachChild.transform.localPosition = eachChild.GetComponent<EnemyMovement>().startPosition;
         }
         GameOverUI.SetActive(false);
-
     }
 
     void FixedUpdate() //Called 50 times per second
