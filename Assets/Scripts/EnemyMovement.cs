@@ -13,6 +13,8 @@ public class EnemyMovement : MonoBehaviour
 
     private Rigidbody2D enemyBody;
 
+    public Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
     void Start()
     {
         enemyBody = GetComponent<Rigidbody2D>();
