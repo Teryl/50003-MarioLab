@@ -1193,9 +1193,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 20
   maxSpeed: 40
-  upSpeed: 13
-  fallGravityMultiplier: 5
-  lowJumpGravityPenalty: 6
+  upSpeed: 15
+  fallGravityMultiplier: 7.5
+  lowJumpGravityPenalty: 8
   airTurnPenalty: 1.5
   jumpOverGoomba: {fileID: 831953827}
   GameOverUI: {fileID: 2067583816}
