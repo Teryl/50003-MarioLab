@@ -6,26 +6,48 @@ using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // movement
     public float speed;
     public float maxSpeed;
     public float upSpeed;
+
     private bool onGround = true;
     private bool onGroundState = true;
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
     private bool faceRightState = true;
 
+    // UI
     public TextMeshProUGUI scoreText;
     public GameObject enemies;
-
     public JumpOverGoomba jumpOverGoomba;
 
+    // game over screen
+    public GameObject gameplayUI;
+    public GameObject gameOverMenu;
+    public TextMeshProUGUI gameOverScoreText;
+
+    // Sprites update
+    public Sprite deathSprite;
+    private Sprite originalSprite;
+
+    // music
+    public AudioSource themeAudioSource;
+    public AudioSource sfxAudioSource;
+
+    public AudioClip themeMusic;
+    public AudioClip jumpSound;
+    public AudioClip deathSound;
 
     void Start()
     {
         marioSprite = GetComponent<SpriteRenderer>();
+        // Store original sprite
+        originalSprite = marioSprite.sprite;
         marioBody = GetComponent<Rigidbody2D>();
         Application.targetFrameRate = 30;
+
+        PlayThemeMusic();
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -34,8 +56,6 @@ public class PlayerMovement : MonoBehaviour
         {
             onGround = true;
         }
-
-        // if (col.gameObject.CompareTag("Ground")) onGroundState = true;
 
         if (col.gameObject.CompareTag("Enemy"))
         {
@@ -72,14 +92,6 @@ public class PlayerMovement : MonoBehaviour
             onGround = false;
         }
 
-        // if (col.gameObject.CompareTag("Ground") ||
-        // col.gameObject.CompareTag("Enemy") ||
-        // col.gameObject.CompareTag("Obstacles"))
-        // {
-        //     onGround = false;
-        //     onGroundState = false;
-        // }
-
         if ((col.gameObject.CompareTag("Enemy") || col.gameObject.CompareTag("Obstacles"))
         && transform.position.y > col.transform.position.y)
         {
@@ -92,7 +104,9 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             Debug.Log("Collided with goomba!");
-            Time.timeScale = 0.0f;
+            PlayDeathSound();
+            StopThemeMusic();
+            GameOver();
         }
 
     }
@@ -145,17 +159,41 @@ public class PlayerMovement : MonoBehaviour
         // Jump
         if (Keyboard.current[Key.Space].wasPressedThisFrame && onGround)
         {
+            // Play jump sound effect FIRST
+            PlayJumpSound();
+
             Vector2 jump = new Vector2(0, upSpeed);
             marioBody.AddForce(jump, ForceMode2D.Impulse);
             onGround = false;
         }
 
-        // if (Input.GetKeyDown("space") && onGroundState)
-        // {
-        //     marioBody.AddForce(Vector2.up * upSpeed, ForceMode2D.Impulse);
-        //     onGroundState = false;
-        // }
+    }
 
+    private void GameOver()
+    {
+        StartCoroutine(GameOverSequence());
+    }
+
+    private IEnumerator GameOverSequence()
+    {
+        // Pause the game
+        Time.timeScale = 0.0f;
+
+        // Change to death sprite
+        marioSprite.sprite = deathSprite;
+
+        // Wait 3 second
+        yield return new WaitForSecondsRealtime(3f);
+
+        // Pause the game
+        Time.timeScale = 0.0f;
+
+        // Update game over score
+        gameOverScoreText.text = "Score: " + jumpOverGoomba.score.ToString();
+
+        // Hide gameplay UI and show game over menu
+        gameplayUI.SetActive(false);
+        gameOverMenu.SetActive(true);
     }
 
     public void RestartButtonCallback(int input)
@@ -165,10 +203,19 @@ public class PlayerMovement : MonoBehaviour
         ResetGame();
         // resume time
         Time.timeScale = 1.0f;
+        // Restart theme music
+        PlayThemeMusic();
     }
 
     private void ResetGame()
     {
+        // Hide the game over menu and show gameplay UI
+        gameOverMenu.SetActive(false);
+        gameplayUI.SetActive(true);
+
+        // Reset sprite to original
+        marioSprite.sprite = originalSprite;
+
         // reset position
         marioBody.transform.position = new Vector3(-80.0f, 2.0f, 0.0f);
         // reset sprite direction
@@ -176,12 +223,61 @@ public class PlayerMovement : MonoBehaviour
         marioSprite.flipX = false;
         // reset score
         scoreText.text = "Score: 0";
+        jumpOverGoomba.score = 0;
         // reset Goomba
         foreach (Transform eachChild in enemies.transform)
         {
             eachChild.transform.localPosition = eachChild.GetComponent<EnemyMovement>().startPosition;
         }
-        // reset score
-        jumpOverGoomba.score = 0;
+
+    }
+
+    // ===== MUSIC =====
+    private void PlayThemeMusic()
+    {
+        if (themeAudioSource != null && themeMusic != null)
+        {
+            themeAudioSource.clip = themeMusic;
+            themeAudioSource.loop = true;  // Loop the theme music
+            themeAudioSource.Play();
+        }
+    }
+
+    private void StopThemeMusic()
+    {
+        if (themeAudioSource != null && themeAudioSource.isPlaying)
+        {
+            themeAudioSource.Stop();
+        }
+    }
+
+    private void PlayJumpSound()
+    {
+        if (sfxAudioSource != null && jumpSound != null)
+        {
+            // Make sure the audio source is enabled and volume is up
+            sfxAudioSource.volume = 1f;
+            sfxAudioSource.PlayOneShot(jumpSound);
+            Debug.Log("Jump sound played!");   // debug code
+        }
+        else
+        {
+            Debug.Log("Jump sound failed - sfxAudioSource: " + (sfxAudioSource != null) + ", jumpSound: " + (jumpSound != null));
+        }
+    }
+
+    private void PlayDeathSound()
+    {
+        if (sfxAudioSource != null && deathSound != null)
+        {
+            // Use PlayOneShot so it can play even when time is paused
+            sfxAudioSource.volume = 1f;
+            sfxAudioSource.PlayOneShot(deathSound);
+            Debug.Log("Death sound played!");
+        }
+        else
+        {
+            Debug.Log("Death sound failed - sfxAudioSource: " + (sfxAudioSource != null) + ", deathSound: " + (deathSound != null));
+        }
     }
 }
