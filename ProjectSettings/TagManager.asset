@@ -6,11 +6,12 @@ TagManager:
   tags:
   - Ground
   - Background
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - 
@@ -45,6 +46,9 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 62051405
     locked: 0
   m_RenderingLayers:
   - Default

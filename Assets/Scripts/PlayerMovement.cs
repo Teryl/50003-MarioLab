@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,17 +12,27 @@ public class PlayerMovement : MonoBehaviour
     public float fallGravityMultiplier;
     public float lowJumpGravityPenalty;
     public float airTurnPenalty;
+
+    public JumpOverGoomba jumpOverGoomba;
+    public GameObject GameOverUI;
+
     private bool onGround = true;
     private float originalGravityScale;
+    private Vector3 startPosition;
 
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
+    public TextMeshProUGUI scoreText;
+    public GameObject enemies;
+
     void Start()
     {
         marioBody = GetComponent<Rigidbody2D>();
         marioSprite = GetComponent<SpriteRenderer>();
         originalGravityScale = marioBody.gravityScale;
-        Application.targetFrameRate = 30;
+        Application.targetFrameRate = 60;
+        startPosition = transform.position;
+        GameOverUI.SetActive(false);
     }
 
     void Update()
@@ -34,10 +47,47 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Death check
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log("Game Over!");
+            Time.timeScale = 0.0f;
+            GameOverUI.SetActive(true);
+        }
+    }
+
+    public void restartButtonCallback()
+    {
+        Debug.Log("Restart!");
+        ResetGame();
+        Time.timeScale = 1.0f;
+    }
+
+    private void ResetGame()
+    {
+        // reset position
+        marioBody.transform.position = startPosition;
+        // reset sprite direction
+        marioSprite.flipX = false;
+        // reset score
+        scoreText.text = "Score: 0";
+        jumpOverGoomba.score = 0;
+
+        // reset Goomba
+        foreach (Transform eachChild in enemies.transform)
+        {
+            eachChild.transform.localPosition = eachChild.GetComponent<EnemyMovement>().startPosition;
+        }
+        GameOverUI.SetActive(false);
+
+    }
+
     void FixedUpdate() //Called 50 times per second
     {
         // Ground check
-        if (Mathf.Abs(marioBody.linearVelocity.y) < 0.01f)
+        if (Mathf.Abs(marioBody.linearVelocity.y) < 0.0001f)
         {
             onGround = true;
         }
