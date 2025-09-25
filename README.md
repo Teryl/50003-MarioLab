@@ -21,8 +21,8 @@ We decided to both do this lab in its entirety, but the report will only explain
 - **James' Version**:
     - Added Background Music, Mario SFX, and game-over SFX.
     - Camera Movement enhanced
-      > Camera follows Mario
-      > Added Camera Boundary (doesn't show world border)
+      - Camera follows Mario
+      - Added Camera Boundary (doesn't show world border)
     - Added World Boundary to contain Mario
 
 ------------**BOTH VIDEOS GO HERE**------------------
