@@ -26,7 +26,7 @@ We decided to both do this lab in its entirety, but the report will only explain
     - Added World Boundary to contain Mario
 
 ------------**VIDEOS**------------------
->> https://shorturl.at/gOCwQ
+**https://shorturl.at/gOCwQ**
 Both versions are inside this link.
 
 ### Detailed Report
