@@ -1,5 +1,5 @@
 # 50.033 Super Mario Labs
-> This project is a collection of progressively complex labs that build Super Mario Bros. from the NES on Unity.
+This project is a collection of progressively complex labs that build Super Mario Bros. from the NES on Unity.
 
 ## Members
 | Name         | Student ID   |
@@ -25,16 +25,18 @@ We decided to both do this lab in its entirety, but the report will only explain
       - Camera follows Mario
       - Added Camera Boundary (doesn't show world border)
     - Added World Boundary to contain Mario
+    - Added death sequence for Mario
     > used as Draft
 
 ===========**VIDEOS**===========
-
+## Videos
 **https://shorturl.at/gOCwQ**
 > Both versions are inside this link.
 
-----------------------------------------------
+===========**REPORT**===========
 
 ### Detailed Report
 
-Text form goes here. Can add my explainer vid as well if needed.
+**https://shorturl.at/FNC5Q**
+> Lab 1 Full Documentation
 
