@@ -9,3 +9,6 @@
     > doesn't show world limit
 - Added World Boundary to contain Mario
   > Mario wouldn't be able to go outside the area/fall to oblivion
+
+Note:
+- Game ratio should be 16:10
