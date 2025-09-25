@@ -28,15 +28,11 @@ We decided to both do this lab in its entirety, but the report will only explain
     - Added death sequence for Mario
     > used as Draft
 
-===========**VIDEOS**===========
 ## Videos
 **https://shorturl.at/gOCwQ**
-> Both versions are inside this link.
+> Both videos are inside this link
 
-===========**REPORT**===========
-
-### Detailed Report
-
+## Detailed Report
 **https://shorturl.at/FNC5Q**
 > Lab 1 Full Documentation
 
