@@ -25,7 +25,9 @@ We decided to both do this lab in its entirety, but the report will only explain
       - Added Camera Boundary (doesn't show world border)
     - Added World Boundary to contain Mario
 
-------------**BOTH VIDEOS GO HERE**------------------
+------------**VIDEOS**------------------
+>> https://shorturl.at/gOCwQ
+Both versions are inside this link.
 
 ### Detailed Report
 
