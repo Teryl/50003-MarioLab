@@ -18,14 +18,14 @@ We decided to both do this lab in its entirety, but the report will only explain
     - Smoothed Camera Movement
     - Additional Physics and modified detections
     - Use of Unity Input Package instead of Legacy system
-> Main Submission
+    > used as Main Submission
 - **James' Version**:
     - Added Background Music, Mario SFX, and game-over SFX.
     - Camera Movement enhanced
       - Camera follows Mario
       - Added Camera Boundary (doesn't show world border)
     - Added World Boundary to contain Mario
-> Draft
+    > used as Draft
 
 ===========**VIDEOS**===========
 
