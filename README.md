@@ -4,13 +4,14 @@ This project is a collection of progressively complex labs that build Super Mari
 ## Members
 | Name         | Student ID   |
 |--------------|--------------|
-| Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
 | James Bryan Budiono     | 1007150     |
+| Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
+
 
 ## Lab 1: Unity for Newborns
 This lab focused on initial setup, getting familiar with Unity and also delved slightly into physics and scripting.
-
 We decided to both do this lab in its entirety, but the report will only explain one of our labs. Regardless, there will be two videos.
+In this git repo, **main** will be the *Main Submission repository*.
 
 ### Additional features
 - **Mithun's Version**:
