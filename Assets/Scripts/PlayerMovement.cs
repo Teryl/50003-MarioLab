@@ -17,12 +17,14 @@ public class PlayerMovement : MonoBehaviour
     public GameObject GameOverUI;
     public TextMeshProUGUI finalScore;
 
-    private bool onGround = true;
+    private bool onGroundState = true;
+    private bool faceRightState = true;
     private float originalGravityScale;
     private Vector3 startPosition;
 
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
+    public Animator marioAnimator;
     public TextMeshProUGUI scoreText;
     public GameObject enemies;
 
@@ -34,18 +36,36 @@ public class PlayerMovement : MonoBehaviour
         Application.targetFrameRate = 60;
         startPosition = transform.position;
         GameOverUI.SetActive(false);
+        marioAnimator.SetBool("onGround", onGroundState);
+        faceRightState = true;
     }
 
     void Update()
     {
-        if (Keyboard.current[Key.A].isPressed)
+        if (Keyboard.current[Key.A].isPressed && faceRightState)
         {
             marioSprite.flipX = false;
+            faceRightState = false;
+            if (marioBody.linearVelocity.x > 0.1f)
+            {
+                marioAnimator.SetTrigger("onSkid");
+            }
         }
-        else if (Keyboard.current[Key.D].isPressed)
+        else if (Keyboard.current[Key.D].isPressed && !faceRightState)
         {
             marioSprite.flipX = true;
+            faceRightState = true;
+            if (marioBody.linearVelocity.x < -0.1f)
+            {
+                marioAnimator.SetTrigger("onSkid");
+            }
         }
+        else if (Keyboard.current[Key.A].isPressed && Keyboard.current[Key.D].isPressed)
+        {
+            marioSprite.flipX = true;
+            faceRightState = true;
+        }
+        marioAnimator.SetFloat("xSpeed", Mathf.Abs(marioBody.linearVelocity.x));
     }
 
     // Death check
@@ -58,6 +78,25 @@ public class PlayerMovement : MonoBehaviour
             finalScore.text = "Score: " + jumpOverGoomba.score.ToString();
             GameOverUI.SetActive(true);
             scoreText.text = "";
+            marioAnimator.SetBool("onDeath", true);
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform")) && !onGroundState)
+        {
+            // Check if collision is from the top
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                // If the contact normal points upwards, it's a top collision
+                if (contact.normal.y > 0.5f)
+                {
+                    onGroundState = true;
+                    marioAnimator.SetBool("onGround", onGroundState);
+                    break;
+                }
+            }
         }
     }
 
@@ -74,10 +113,12 @@ public class PlayerMovement : MonoBehaviour
         // reset position
         marioBody.transform.position = startPosition;
         // reset sprite direction
-        marioSprite.flipX = false;
+        marioSprite.flipX = true;
         // reset score
         scoreText.text = "Score: 0";
         jumpOverGoomba.score = 0;
+        // reset animator
+        marioAnimator.SetTrigger("onDeath");
 
         // reset Goomba
         foreach (Transform eachChild in enemies.transform)
@@ -89,16 +130,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate() //Called 50 times per second
     {
-        // Ground check
-        if (Mathf.Abs(marioBody.linearVelocity.y) < 0.0001f)
-        {
-            onGround = true;
-        }
-        else
-        {
-            onGround = false;
-        }
-
         // Movement
         float moveHorizontal = 0f;
         if (Keyboard.current != null)
@@ -112,6 +143,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 moveHorizontal = 1f;
             }
+            else
+            {
+                moveHorizontal = 0f;
+            }
         }
 
         Vector2 movement = new Vector2(moveHorizontal, 0);
@@ -119,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (marioBody.linearVelocity.magnitude < maxSpeed)
             {
-                if (!onGround)
+                if (!onGroundState)
                 {
                     movement.x *= airTurnPenalty - 1;
                 }
@@ -132,20 +167,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Jump with low jump penalty
-        if (Keyboard.current[Key.Space].wasPressedThisFrame && onGround)
+        if (Keyboard.current[Key.Space].isPressed && onGroundState)
         {
             Vector2 jump = new Vector2(0, upSpeed);
             marioBody.AddForce(jump, ForceMode2D.Impulse);
+            onGroundState = false;
+            // update the animator
+            marioAnimator.SetBool("onGround", onGroundState);
         }
         if (marioBody.linearVelocity.y < -0.01f)
         {
             marioBody.gravityScale = fallGravityMultiplier * originalGravityScale;
-        }
-        else if (marioBody.linearVelocity.y > 0.01f && !Keyboard.current[Key.Space].isPressed)
+        } else if (marioBody.linearVelocity.y > 0.01f && !Keyboard.current[Key.Space].isPressed)
         {
             marioBody.AddForce(Vector2.up * Physics2D.gravity.y * lowJumpGravityPenalty * marioBody.mass);
-        }
-        else
+        } else
         {
             marioBody.gravityScale = originalGravityScale;
         }

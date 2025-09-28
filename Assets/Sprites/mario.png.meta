@@ -123,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mario_move_5
+      name: mario_jump
       rect:
         serializedVersion: 2
         x: 29
@@ -145,7 +145,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_4
+      name: mario_skid
       rect:
         serializedVersion: 2
         x: 60
@@ -167,7 +167,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_3
+      name: mario_move_2
       rect:
         serializedVersion: 2
         x: 89
@@ -189,7 +189,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_2
+      name: mario_move_1
       rect:
         serializedVersion: 2
         x: 121
@@ -211,7 +211,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_1
+      name: mario_move_0
       rect:
         serializedVersion: 2
         x: 150
@@ -233,7 +233,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_move_0
+      name: mario_idle
       rect:
         serializedVersion: 2
         x: 181
@@ -277,7 +277,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_5
+      name: mario_longjump_5
       rect:
         serializedVersion: 2
         x: 30
@@ -299,7 +299,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_4
+      name: mario_longjump_4
       rect:
         serializedVersion: 2
         x: 61
@@ -321,7 +321,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_3
+      name: mario_longjump_3
       rect:
         serializedVersion: 2
         x: 90
@@ -343,7 +343,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_2
+      name: mario_longjump_2
       rect:
         serializedVersion: 2
         x: 120
@@ -365,7 +365,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_1
+      name: mario_longjump_1
       rect:
         serializedVersion: 2
         x: 150
@@ -387,7 +387,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mario_jump_0
+      name: mario_longjump_0
       rect:
         serializedVersion: 2
         x: 180
@@ -423,18 +423,18 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       mario_die: 1949562984
-      mario_jump_0: -1465001028
-      mario_jump_1: 596275398
-      mario_jump_2: -1639090068
-      mario_jump_3: -966824536
-      mario_jump_4: 1773205587
-      mario_jump_5: -136168589
-      mario_move_0: 1815855729
-      mario_move_1: -1682538759
-      mario_move_2: 1733558698
-      mario_move_3: 1838711901
-      mario_move_4: -1836170299
-      mario_move_5: -1993299241
+      mario_idle: 1815855729
+      mario_jump: -1993299241
+      mario_longjump_0: -1465001028
+      mario_longjump_1: 596275398
+      mario_longjump_2: -1639090068
+      mario_longjump_3: -966824536
+      mario_longjump_4: 1773205587
+      mario_longjump_5: -136168589
+      mario_move_0: -1682538759
+      mario_move_1: 1733558698
+      mario_move_2: 1838711901
+      mario_skid: -1836170299
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
