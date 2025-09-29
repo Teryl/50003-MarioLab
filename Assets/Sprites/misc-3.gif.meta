@@ -6324,28 +6324,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: castle_big_left
-      rect:
-        serializedVersion: 2
-        x: 393
-        y: 566
-        width: 40
-        height: 176
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ab405410000000000800000000000000
-      internalID: 21300410
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: misc-3_206
       rect:
         serializedVersion: 2
@@ -13936,23 +13914,23 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: castle_big_right
+      name: castle_main
       rect:
         serializedVersion: 2
-        x: 433
+        x: 393
         y: 566
-        width: 109
+        width: 150
         height: 176
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 27705410000000000800000000000000
-      internalID: 21301106
+      spriteID: c6c99a311dcc7954cbcbdca290e70c6a
+      internalID: -2110325512
       vertices: []
       indices: 
       edges: []
@@ -14011,6 +13989,7 @@ TextureImporter:
       castle_big_left: 21300410
       castle_big_right: 21301106
       castle_flag: 21300212
+      castle_main: -2110325512
       castle_small_grey: 21300228
       castle_small_left: 21300226
       castle_small_right: 21301102

@@ -23,6 +23,12 @@ public class GameManager : MonoBehaviour
     [Header("Death Sequence")]
     [SerializeField] private float deathSequenceDelay = 2.0f; // Time to wait after death impulse before game over
     
+    [Header ("Camera")]
+    public Transform gameCamera;
+
+    [Header("Audio")]
+    public AudioSource backgroundMusic;
+    
     private bool isDeathSequenceActive = false;
     
     // Singleton pattern for easy access
@@ -45,20 +51,27 @@ public class GameManager : MonoBehaviour
     {
         InitializeGame();
     }
-    
+
     void InitializeGame()
     {
         // Initialize score display
         UpdateScoreDisplay();
-        
+
         // Make sure game over UI is hidden
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
         }
-        
+
         // Set normal time scale
         Time.timeScale = 1.0f;
+
+        // Play background music
+        if (backgroundMusic != null && !backgroundMusic.isPlaying)
+        {
+            backgroundMusic.Play();
+        }
+        
     }
     
     public void AddScore(int points)
@@ -81,6 +94,23 @@ public class GameManager : MonoBehaviour
         if (!isDeathSequenceActive)
         {
             isDeathSequenceActive = true;
+
+            // stop background music
+            if (backgroundMusic != null && backgroundMusic.isPlaying)
+            {
+                backgroundMusic.Stop();
+            }
+
+            // freeze camera
+            if (gameCamera != null)
+            {
+                CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
+                if (cameraMovement != null)
+                {
+                    cameraMovement.enabled = false;
+                }
+            }
+
             StartCoroutine(DeathSequenceCoroutine());
         }
     }
@@ -119,35 +149,57 @@ public class GameManager : MonoBehaviour
             scoreText.text = "";
         }
     }
-    
+
     public void RestartGame()
     {
         Debug.Log("Restart!");
-        
+
         // Stop any active death sequence
         StopAllCoroutines();
         isDeathSequenceActive = false;
-        
+
         // Reset time scale
         Time.timeScale = 1.0f;
-        
+
         // Reset score
         score = 0;
         UpdateScoreDisplay();
-        
+
         // Reset player position and state
         if (playerMovement != null)
         {
             playerMovement.ResetPlayer();
         }
-        
+
         // Reset enemies
         ResetEnemies();
-        
+
         // Hide game over UI
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
+        }
+
+        // Reset camera position
+        if (gameCamera != null)
+        {
+            CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
+            if (cameraMovement != null)
+            { 
+                cameraMovement.enabled = true;
+                cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
+            }
+            else
+            {
+                gameCamera.position = new Vector3(0, 4.5f, -10);
+            }
+        }
+        
+        // Restart background music from the beginning
+        if (backgroundMusic != null)
+        {
+            backgroundMusic.Stop();
+            backgroundMusic.Play();
         }
     }
     
