@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
     [Header("Enemy References")]
     public GameObject enemies;
     
+    [Header("Death Sequence")]
+    [SerializeField] private float deathSequenceDelay = 2.0f; // Time to wait after death impulse before game over
+    
+    private bool isDeathSequenceActive = false;
+    
     // Singleton pattern for easy access
     public static GameManager Instance;
     
@@ -71,6 +76,24 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void StartDeathSequence()
+    {
+        if (!isDeathSequenceActive)
+        {
+            isDeathSequenceActive = true;
+            StartCoroutine(DeathSequenceCoroutine());
+        }
+    }
+    
+    private IEnumerator DeathSequenceCoroutine()
+    {
+        // Wait for the player to bounce up and fall back down
+        yield return new WaitForSeconds(deathSequenceDelay);
+        
+        // Now trigger game over
+        GameOver();
+    }
+    
     public void GameOver()
     {
         Debug.Log("Game Over!");
@@ -95,17 +118,15 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = "";
         }
-        
-        // Trigger death animation if player exists
-        if (playerMovement != null && playerMovement.marioAnimator != null)
-        {
-            playerMovement.marioAnimator.SetTrigger("onDeath");
-        }
     }
     
     public void RestartGame()
     {
         Debug.Log("Restart!");
+        
+        // Stop any active death sequence
+        StopAllCoroutines();
+        isDeathSequenceActive = false;
         
         // Reset time scale
         Time.timeScale = 1.0f;

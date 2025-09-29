@@ -99,13 +99,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Enemy") && isAlive)
         {
+            // Start death sequence
             isAlive = false;
-            GiveDeathImpulse();
             marioAnimator.Play("mario_die");
             marioAudio.PlayOneShot(marioDeath);
+            GiveDeathImpulse();
+            
+            // Start delayed game over through GameManager
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.GameOver();
+                GameManager.Instance.StartDeathSequence();
             }
         }
     }
@@ -137,6 +140,8 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate() //Called 50 times per second
     {
+        if (!isAlive) return;
+        
         // Movement
         float moveHorizontal = 0f;
         if (Keyboard.current != null)
@@ -174,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Jump with low jump penalty
-        if (Keyboard.current[Key.Space].isPressed && onGroundState)
+        if (Keyboard.current[Key.Space].isPressed && onGroundState && isAlive)
         {
             Vector2 jump = new Vector2(0, upSpeed);
             marioBody.AddForce(jump, ForceMode2D.Impulse);
