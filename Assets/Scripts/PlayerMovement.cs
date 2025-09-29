@@ -6,27 +6,50 @@ using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Physics Parameters")]
     public float speed;
     public float maxSpeed;
     public float upSpeed;
     public float fallGravityMultiplier;
     public float lowJumpGravityPenalty;
     public float airTurnPenalty;
-
-    public JumpOverGoomba jumpOverGoomba;
-    public GameObject GameOverUI;
-    public TextMeshProUGUI finalScore;
+    public float deathImpulse = 15;
 
     private bool onGroundState = true;
     private bool faceRightState = true;
     private float originalGravityScale;
+
+    [System.NonSerialized]
+    public bool isAlive = true;
     private Vector3 startPosition;
 
+    [Header ("Component References")]
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
     public Animator marioAnimator;
-    public TextMeshProUGUI scoreText;
-    public GameObject enemies;
+    public AudioSource marioAudio;
+    public AudioClip marioDeath;
+
+    public void ResetPlayer()
+    {
+        // reset position
+        marioBody.transform.position = startPosition;
+        // reset sprite direction
+        marioSprite.flipX = true;
+        faceRightState = true;
+        // reset state
+        onGroundState = true;
+        isAlive = true;
+        // reset animator
+        marioAnimator.SetTrigger("gameRestart");
+        marioAnimator.SetBool("onGround", onGroundState);
+    }
+
+    void GiveDeathImpulse()
+    {
+        marioBody.AddForce(Vector2.up * deathImpulse, ForceMode2D.Impulse);
+    }
+    
 
     void Start()
     {
@@ -35,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
         originalGravityScale = marioBody.gravityScale;
         Application.targetFrameRate = 60;
         startPosition = transform.position;
-        GameOverUI.SetActive(false);
         marioAnimator.SetBool("onGround", onGroundState);
         faceRightState = true;
     }
@@ -71,14 +93,16 @@ public class PlayerMovement : MonoBehaviour
     // Death check
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Enemy"))
+        if (collider.gameObject.CompareTag("Enemy") && isAlive)
         {
-            Debug.Log("Game Over!");
-            Time.timeScale = 0.0f;
-            finalScore.text = "Score: " + jumpOverGoomba.score.ToString();
-            GameOverUI.SetActive(true);
-            scoreText.text = "";
-            marioAnimator.SetBool("onDeath", true);
+            isAlive = false;
+            GiveDeathImpulse();
+            marioAnimator.Play("mario_die");
+            marioAudio.PlayOneShot(marioDeath);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
     }
 
@@ -102,32 +126,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void restartButtonCallback()
     {
-        Debug.Log("Restart!");
-        ResetGame();
-        Time.timeScale = 1.0f;
-
-    }
-
-    private void ResetGame()
-    {
-        // reset position
-        marioBody.transform.position = startPosition;
-        // reset sprite direction
-        marioSprite.flipX = true;
-        // reset score
-        scoreText.text = "Score: 0";
-        jumpOverGoomba.score = 0;
-        // reset animator
-        marioAnimator.SetTrigger("onDeath");
-
-        // reset Goomba
-        foreach (Transform eachChild in enemies.transform)
+        if (GameManager.Instance != null)
         {
-            eachChild.transform.localPosition = eachChild.GetComponent<EnemyMovement>().startPosition;
+            GameManager.Instance.RestartGame();
         }
-        GameOverUI.SetActive(false);
     }
-
     void FixedUpdate() //Called 50 times per second
     {
         // Movement

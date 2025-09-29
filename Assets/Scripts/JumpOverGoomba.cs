@@ -7,11 +7,7 @@ using System.Collections.Generic;
 public class JumpOverGoomba : MonoBehaviour
 {
     public Transform enemyLocation;
-    public TextMeshProUGUI scoreText;
     private bool onGroundState = true;
-
-    [System.NonSerialized]
-    public int score = 0;
 
     private bool countScoreState = false;
     public Vector3 boxSize;
@@ -32,10 +28,12 @@ public class JumpOverGoomba : MonoBehaviour
         {
             if (Mathf.Abs(transform.position.x - enemyLocation.position.x) < 0.5f)
             {
-                score += 1;
-                scoreText.text = "Score: " + score.ToString();
+                // Use GameManager to handle scoring
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.AddScore(1);
+                }
                 countScoreState = false;
-                Debug.Log(score);
             }
         }
     }
