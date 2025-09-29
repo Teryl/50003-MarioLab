@@ -49,7 +49,11 @@ public class PlayerMovement : MonoBehaviour
     {
         marioBody.AddForce(Vector2.up * deathImpulse, ForceMode2D.Impulse);
     }
-    
+
+    void PlayJumpSound()
+    {
+        marioAudio.PlayOneShot(marioAudio.clip);
+    } 
 
     void Start()
     {

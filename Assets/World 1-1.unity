@@ -1363,12 +1363,10 @@ MonoBehaviour:
   fallGravityMultiplier: 7.5
   lowJumpGravityPenalty: 8
   airTurnPenalty: 1.5
-  jumpOverGoomba: {fileID: 831953827}
-  GameOverUI: {fileID: 2067583816}
-  finalScore: {fileID: 453761378}
+  deathImpulse: 15
   marioAnimator: {fileID: 831953828}
-  scoreText: {fileID: 239405250}
-  enemies: {fileID: 8957849}
+  marioAudio: {fileID: 0}
+  marioDeath: {fileID: 0}
 --- !u!50 &831953822
 Rigidbody2D:
   serializedVersion: 5
@@ -1446,7 +1444,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JumpOverGoomba
   enemyLocation: {fileID: 705028578}
-  scoreText: {fileID: 239405250}
   boxSize: {x: 0.5, y: 2, z: 0}
   maxDistance: 0.2
   layerMask:
@@ -5266,6 +5263,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678610258}
   m_CullTransparentMesh: 1
+--- !u!1 &1827928223
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1827928225}
+  - component: {fileID: 1827928224}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1827928224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827928223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776450ddad91648e880676f1f74aff4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  scoreText: {fileID: 239405250}
+  score: 0
+  gameOverUI: {fileID: 2067583816}
+  finalScoreText: {fileID: 453761378}
+  playerMovement: {fileID: 831953821}
+  playerStartPosition: {fileID: 831953820}
+  enemies: {fileID: 8957849}
+--- !u!4 &1827928225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827928223}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.30982, y: 3.08687, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1909298635
 GameObject:
   m_ObjectHideFlags: 0
@@ -5655,3 +5703,4 @@ SceneRoots:
   - {fileID: 8957850}
   - {fileID: 1558482716}
   - {fileID: 229064688}
+  - {fileID: 1827928225}

@@ -28,7 +28,6 @@ public class JumpOverGoomba : MonoBehaviour
         {
             if (Mathf.Abs(transform.position.x - enemyLocation.position.x) < 0.5f)
             {
-                // Use GameManager to handle scoring
                 if (GameManager.Instance != null)
                 {
                     GameManager.Instance.AddScore(1);
