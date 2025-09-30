@@ -8,7 +8,7 @@ This project is a collection of progressively complex labs that build Super Mari
 | Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
 
 
-## Lab 1: Unity for Babies
+## Lab 2: Unity for Babies
 This lab focused on Character Animations, Camera movement, and interactables with in-game physics (Physics2D).
 In this git repo, **lab2** will be the *Main Submission repository*.
 
@@ -17,13 +17,16 @@ Animations
 - Mario Animation
   - Jumping, Running, Skidding, and when Mario dies (death sequence)
 - Goomba Animation
+
 Camera Movement
 - Added world borders so Mario doesn’t fall into oblivion
 - The main camera is affected by this border collision,  so now it doesn't show the world’s limit/edge.
+
 Sound Effects
 - Added sound when Mario jumps
 - Added sound when Mario dies
 - Added Background Music
+
 Interactable Objects
 - Added Question Box
   - When idle, the block blinks (alternatively)
