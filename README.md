@@ -8,32 +8,36 @@ This project is a collection of progressively complex labs that build Super Mari
 | Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
 
 
-## Lab 1: Unity for Newborns
-This lab focused on initial setup, getting familiar with Unity and also delved slightly into physics and scripting.
-We decided to both do this lab in its entirety, but the report will only explain one of our labs. Regardless, there will be two videos.
-In this git repo, **main** will be the *Main Submission repository*.
+## Lab 1: Unity for Babies
+This lab focused on Character Animations, Camera movement, and interactables with in-game physics (Physics2D).
+In this git repo, **lab2** will be the *Main Submission repository*.
 
 ### Additional features
-- **Mithun's Version**:
-    - Tilemapped Platforms and Ground, Background, etc.
-    - Smoothed Camera Movement
-    - Additional Physics and modified detections
-    - Use of Unity Input Package instead of Legacy system
-    > used as Main Submission
-- **James' Version**:
-    - Added Background Music, Mario SFX, and game-over SFX.
-    - Camera Movement enhanced
-      - Camera follows Mario
-      - Added Camera Boundary (doesn't show world border)
-    - Added World Boundary to contain Mario
-    - Added death sequence for Mario
-    > used as Draft
+Animations
+- Mario Animation
+  - Jumping, Running, Skidding, and when Mario dies (death sequence)
+- Goomba Animation
+Camera Movement
+- Added world borders so Mario doesn’t fall into oblivion
+- The main camera is affected by this border collision,  so now it doesn't show the world’s limit/edge.
+Sound Effects
+- Added sound when Mario jumps
+- Added sound when Mario dies
+- Added Background Music
+Interactable Objects
+- Added Question Box
+  - When idle, the block blinks (alternatively)
+  - When hit from below, the block will bounce(springs) upwards, then fall back to its original position and turned into solid.
+  - Added Coin for Mario to collect.
+- Added Bricks
+  - When hit from below, the block will also springs upwards, then it will fall back to its original position.
+  - Added Multiple coins for Mario to collect.
 
 ## Videos
-**https://shorturl.at/gOCwQ**
-> Both videos are inside this link
+**COMING SOON**
+> Gameplay video is inside this link
 
 ## Detailed Report
-**https://shorturl.at/FNC5Q**
-> Lab 1 Full Documentation
+**[https://shorturl.at/FNC5Q](https://tinyurl.com/2adayk49)**
+> Lab 2 Full Documentation
 
