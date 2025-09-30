@@ -2851,9 +2851,9 @@ TextureImporter:
       name: pipe_green_body
       rect:
         serializedVersion: 2
-        x: 616
+        x: 614
         y: 1154
-        width: 28
+        width: 32
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -13922,7 +13922,7 @@ TextureImporter:
         width: 150
         height: 176
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
