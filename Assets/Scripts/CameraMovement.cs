@@ -11,6 +11,7 @@ public class CameraMovement : MonoBehaviour
     [Header("Camera Boundaries")]
     public Transform startLimit;
     public Transform endLimit;
+    public Transform topLimit;
     public bool useBoundaries = true; // Enable/disable boundaries (enabled by defaut)
 
     void FixedUpdate()
@@ -26,11 +27,18 @@ public class CameraMovement : MonoBehaviour
                 // Calculate viewport half width in real-time
                 Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
                 float viewportHalfWidth = Mathf.Abs(bottomLeft.x - this.transform.position.x);
+                float viewportHalfHeight = Mathf.Abs(bottomLeft.y - this.transform.position.y);
 
+                // Horizontal boundaries
                 float minX = (startLimit != null) ? startLimit.position.x + viewportHalfWidth : float.MinValue;
                 float maxX = (endLimit != null) ? endLimit.position.x - viewportHalfWidth : float.MaxValue;
 
+                // Vertical boundaries
+                float minY = (bottomLeft.y + viewportHalfHeight);
+                float maxY = (topLimit != null) ? topLimit.position.y - viewportHalfHeight : float.MaxValue;
+                
                 smoothedPosition.x = Mathf.Clamp(smoothedPosition.x, minX, maxX);
+                smoothedPosition.y = Mathf.Clamp(smoothedPosition.y, minY, maxY);
             }
 
             transform.position = smoothedPosition;
