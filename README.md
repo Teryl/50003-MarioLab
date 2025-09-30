@@ -13,21 +13,21 @@ This lab focused on Character Animations, Camera movement, and interactables wit
 In this git repo, **lab2** will be the *Main Submission repository*.
 
 ### Additional features
-Animations
+#### Animations
 - Mario Animation
   - Jumping, Running, Skidding, and when Mario dies (death sequence)
 - Goomba Animation
 
-Camera Movement
+#### Camera Movement
 - Added world borders so Mario doesn’t fall into oblivion
 - The main camera is affected by this border collision,  so now it doesn't show the world’s limit/edge.
 
-Sound Effects
+#### Sound Effects
 - Added sound when Mario jumps
 - Added sound when Mario dies
 - Added Background Music
 
-Interactable Objects
+#### Interactable Objects
 - Added Question Box
   - When idle, the block blinks (alternatively)
   - When hit from below, the block will bounce(springs) upwards, then fall back to its original position and turned into solid.
