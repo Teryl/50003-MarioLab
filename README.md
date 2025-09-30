@@ -10,7 +10,8 @@ This project is a collection of progressively complex labs that build Super Mari
 
 ## Lab 2: Unity for Babies
 This lab focused on Character Animations, Camera movement, and interactables with in-game physics (Physics2D).
-In this git repo, **lab2** will be the *Main Submission repository*.
+
+#### In this git repo, **lab2** will be the *Main Submission repository*.
 
 ### Additional features
 #### Animations
