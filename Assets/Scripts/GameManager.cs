@@ -8,15 +8,15 @@ public class GameManager : MonoBehaviour
     [Header("Score System")]
     public TextMeshProUGUI scoreText;
     public int score = 0;
-    
+
     [Header("Game Over")]
     public GameObject gameOverUI;
     public TextMeshProUGUI finalScoreText;
-    
+
     [Header("Player References")]
     public PlayerMovement playerMovement;
     public Transform playerStartPosition;
-    
+
     [Header("Enemy References")]
     public GameObject enemies;
 
@@ -28,17 +28,17 @@ public class GameManager : MonoBehaviour
 
     [Header("Death Sequence")]
     [SerializeField] private float deathSequenceDelay = 2.0f;
-    
-    [Header ("Camera")]
+
+    [Header("Camera")]
     public Transform gameCamera;
 
     [Header("Audio")]
     public AudioSource backgroundMusic;
-    
+
     private bool isDeathSequenceActive = false;
-    
+
     public static GameManager Instance;
-    
+
     void Awake()
     {
         if (Instance == null)
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
+
     void Start()
     {
         InitializeGame();
@@ -71,16 +71,16 @@ public class GameManager : MonoBehaviour
         {
             backgroundMusic.Play();
         }
-        
+
     }
-    
+
     public void AddScore(int points)
     {
         score += points;
         UpdateScoreDisplay();
         Debug.Log("Score: " + score);
     }
-    
+
     void UpdateScoreDisplay()
     {
         if (scoreText != null)
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
             scoreText.text = "Score: " + score.ToString();
         }
     }
-    
+
     public void StartDeathSequence()
     {
         if (!isDeathSequenceActive)
@@ -112,30 +112,30 @@ public class GameManager : MonoBehaviour
             StartCoroutine(DeathSequenceCoroutine());
         }
     }
-    
+
     private IEnumerator DeathSequenceCoroutine()
     {
         yield return new WaitForSeconds(deathSequenceDelay);
-        
+
         GameOver();
     }
-    
+
     public void GameOver()
     {
         Debug.Log("Game Over!");
-        
+
         Time.timeScale = 0.0f;
-        
+
         if (finalScoreText != null)
         {
             finalScoreText.text = "Score: " + score.ToString();
         }
-        
+
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
         }
-        
+
         if (scoreText != null)
         {
             scoreText.text = "";
@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour
         {
             CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
             if (cameraMovement != null)
-            { 
+            {
                 cameraMovement.enabled = true;
                 cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
             }
@@ -183,14 +183,14 @@ public class GameManager : MonoBehaviour
                 gameCamera.position = new Vector3(0, 4.5f, -10);
             }
         }
-        
+
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
             backgroundMusic.Play();
         }
     }
-    
+
     void ResetEnemies()
     {
         if (enemies != null)
@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
         if (mysteryBoxes != null)
         {
             MysteryBox[] allMysteryBoxes = mysteryBoxes.GetComponentsInChildren<MysteryBox>();
-            
+
             foreach (MysteryBox mysteryBox in allMysteryBoxes)
             {
                 if (mysteryBox != null)
@@ -247,7 +247,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     public void RestartButtonCallback()
     {
         RestartGame();

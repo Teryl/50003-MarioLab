@@ -32,7 +32,7 @@ public class CoinController : MonoBehaviour
         if (other.CompareTag("Player") && !isCollected)
         {
             isCollected = true;
-            
+
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.AddScore(1);
@@ -54,10 +54,10 @@ public class CoinController : MonoBehaviour
         if (other.CompareTag("Platform") && boxCollectible)
         {
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, 5f);
         }
     }
-    
+
     IEnumerator DisableAfterSound()
     {
         yield return new WaitForSeconds(audioSource.clip.length);

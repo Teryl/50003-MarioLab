@@ -44,7 +44,7 @@ public class MysteryBox : MonoBehaviour
         {
             Vector2 hitDirection = collision.contacts[0].normal;
 
-            if (hitDirection.y > -0.5f)
+            if (hitDirection.y > 0.5f)
             {
                 isUsed = true;
                 boxAnimator.SetBool("isUsed", true);
