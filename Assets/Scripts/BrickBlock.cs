@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class BrickBlockConfig : MonoBehaviour
+public class BrickBlock : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpringJoint2D springJoint;

@@ -20,11 +20,14 @@ public class GameManager : MonoBehaviour
     [Header("Enemy References")]
     public GameObject enemies;
 
-    [Header("Mystery Box References")]
+    [Header("Mystery Boxes")]
     public GameObject mysteryBoxes;
-    
+
+    [Header("Collectibles")]
+    public GameObject collectibles;
+
     [Header("Death Sequence")]
-    [SerializeField] private float deathSequenceDelay = 2.0f; // Time to wait after death impulse before game over
+    [SerializeField] private float deathSequenceDelay = 2.0f;
     
     [Header ("Camera")]
     public Transform gameCamera;
@@ -34,12 +37,10 @@ public class GameManager : MonoBehaviour
     
     private bool isDeathSequenceActive = false;
     
-    // Singleton pattern for easy access
     public static GameManager Instance;
     
     void Awake()
     {
-        // Singleton setup
         if (Instance == null)
         {
             Instance = this;
@@ -57,19 +58,15 @@ public class GameManager : MonoBehaviour
 
     void InitializeGame()
     {
-        // Initialize score display
         UpdateScoreDisplay();
 
-        // Make sure game over UI is hidden
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
         }
 
-        // Set normal time scale
         Time.timeScale = 1.0f;
 
-        // Play background music
         if (backgroundMusic != null && !backgroundMusic.isPlaying)
         {
             backgroundMusic.Play();
@@ -98,13 +95,11 @@ public class GameManager : MonoBehaviour
         {
             isDeathSequenceActive = true;
 
-            // stop background music
             if (backgroundMusic != null && backgroundMusic.isPlaying)
             {
                 backgroundMusic.Stop();
             }
 
-            // freeze camera
             if (gameCamera != null)
             {
                 CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
@@ -120,7 +115,6 @@ public class GameManager : MonoBehaviour
     
     private IEnumerator DeathSequenceCoroutine()
     {
-        // wait for the player to bounce up and fall back down
         yield return new WaitForSeconds(deathSequenceDelay);
         
         GameOver();
@@ -130,22 +124,18 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over!");
         
-        // stop the game
         Time.timeScale = 0.0f;
         
-        // update final score display
         if (finalScoreText != null)
         {
             finalScoreText.text = "Score: " + score.ToString();
         }
         
-        // show gameover UI
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
         }
         
-        // clear score text during game over
         if (scoreText != null)
         {
             scoreText.text = "";
@@ -156,36 +146,30 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Restart!");
 
-        // Stop any active death sequence
         StopAllCoroutines();
         isDeathSequenceActive = false;
 
-        // Reset time scale
         Time.timeScale = 1.0f;
 
-        // Reset score
         score = 0;
         UpdateScoreDisplay();
 
-        // Reset player position and state
         if (playerMovement != null)
         {
             playerMovement.ResetPlayer();
         }
 
-        // reset enemies
         ResetEnemies();
 
-        // reset mystery box
         ResetMysteryBoxes();
 
-        // hide game over UI
+        ResetCollectibles();
+
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
         }
 
-        // reset camera position
         if (gameCamera != null)
         {
             CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
@@ -200,7 +184,6 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        // restart background music
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
@@ -227,10 +210,9 @@ public class GameManager : MonoBehaviour
     {
         if (mysteryBoxes != null)
         {
-            // Get all MysteryBoxConfig components in children (recursive search)
-            MysteryBoxConfig[] allMysteryBoxes = mysteryBoxes.GetComponentsInChildren<MysteryBoxConfig>();
+            MysteryBox[] allMysteryBoxes = mysteryBoxes.GetComponentsInChildren<MysteryBox>();
             
-            foreach (MysteryBoxConfig mysteryBox in allMysteryBoxes)
+            foreach (MysteryBox mysteryBox in allMysteryBoxes)
             {
                 if (mysteryBox != null)
                 {
@@ -239,8 +221,33 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    void ResetCollectibles()
+    {
+        if (collectibles != null)
+        {
+            foreach (Transform eachChild in collectibles.transform)
+            {
+                CoinController coinController = eachChild.GetComponent<CoinController>();
+                if (coinController != null)
+                {
+                    Destroy(coinController.gameObject);
+                }
+            }
+        }
+        // also respawn stationary coins
+        CoinController[] allCoins = collectibles.GetComponentsInChildren<CoinController>();
+        foreach (CoinController coin in allCoins)
+        {
+            if (coin != null && !coin.boxCollectible)
+            {
+                coin.gameObject.SetActive(true);
+                coin.GetComponent<SpriteRenderer>().enabled = true;
+                coin.GetComponent<Collider2D>().enabled = true;
+            }
+        }
+    }
     
-    // Public method for restart button callback
     public void RestartButtonCallback()
     {
         RestartGame();
