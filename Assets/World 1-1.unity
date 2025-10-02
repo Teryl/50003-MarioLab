@@ -2023,7 +2023,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1553896589281116603, guid: 001e2e86d0dc4904899905e6e1f80e83, type: 3}
       propertyPath: m_AnimatedTiles.Array.data[0].second.m_AnimationSpeed
-      value: 6.0000005
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3183887986312755300, guid: 001e2e86d0dc4904899905e6e1f80e83, type: 3}
       propertyPath: m_Distance
@@ -2180,7 +2180,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1553896589281116603, guid: 001e2e86d0dc4904899905e6e1f80e83, type: 3}
       propertyPath: m_AnimatedTiles.Array.data[0].second.m_AnimationSpeed
-      value: 6
+      value: 6.0000005
       objectReference: {fileID: 0}
     - target: {fileID: 3183887986312755300, guid: 001e2e86d0dc4904899905e6e1f80e83, type: 3}
       propertyPath: m_Distance
@@ -10960,6 +10960,7 @@ MonoBehaviour:
   playerMovement: {fileID: 831953821}
   playerStartPosition: {fileID: 831953820}
   enemies: {fileID: 8957849}
+  mysteryBoxes: {fileID: 1758794466}
   deathSequenceDelay: 2
   gameCamera: {fileID: 991409861}
   backgroundMusic: {fileID: 1826033349}

@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     
     [Header("Enemy References")]
     public GameObject enemies;
+
+    [Header("Mystery Box References")]
+    public GameObject mysteryBoxes;
     
     [Header("Death Sequence")]
     [SerializeField] private float deathSequenceDelay = 2.0f; // Time to wait after death impulse before game over
@@ -117,10 +120,9 @@ public class GameManager : MonoBehaviour
     
     private IEnumerator DeathSequenceCoroutine()
     {
-        // Wait for the player to bounce up and fall back down
+        // wait for the player to bounce up and fall back down
         yield return new WaitForSeconds(deathSequenceDelay);
         
-        // Now trigger game over
         GameOver();
     }
     
@@ -128,22 +130,22 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over!");
         
-        // Stop the game
+        // stop the game
         Time.timeScale = 0.0f;
         
-        // Update final score display
+        // update final score display
         if (finalScoreText != null)
         {
             finalScoreText.text = "Score: " + score.ToString();
         }
         
-        // Show game over UI
+        // show gameover UI
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(true);
         }
         
-        // Clear score text during game over
+        // clear score text during game over
         if (scoreText != null)
         {
             scoreText.text = "";
@@ -171,16 +173,19 @@ public class GameManager : MonoBehaviour
             playerMovement.ResetPlayer();
         }
 
-        // Reset enemies
+        // reset enemies
         ResetEnemies();
 
-        // Hide game over UI
+        // reset mystery box
+        ResetMysteryBoxes();
+
+        // hide game over UI
         if (gameOverUI != null)
         {
             gameOverUI.SetActive(false);
         }
 
-        // Reset camera position
+        // reset camera position
         if (gameCamera != null)
         {
             CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
@@ -195,7 +200,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        // Restart background music from the beginning
+        // restart background music
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
@@ -213,6 +218,23 @@ public class GameManager : MonoBehaviour
                 if (enemyMovement != null)
                 {
                     eachChild.transform.localPosition = enemyMovement.startPosition;
+                }
+            }
+        }
+    }
+
+    void ResetMysteryBoxes()
+    {
+        if (mysteryBoxes != null)
+        {
+            // Get all MysteryBoxConfig components in children (recursive search)
+            MysteryBoxConfig[] allMysteryBoxes = mysteryBoxes.GetComponentsInChildren<MysteryBoxConfig>();
+            
+            foreach (MysteryBoxConfig mysteryBox in allMysteryBoxes)
+            {
+                if (mysteryBox != null)
+                {
+                    mysteryBox.ResetMysteryBox();
                 }
             }
         }

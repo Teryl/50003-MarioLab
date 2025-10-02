@@ -6,22 +6,23 @@ public class BrickBlockConfig : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpringJoint2D springJoint;
+    private AudioSource audioSource;
     private Vector2 originalPosition;
     private bool isBouncing = false;
     
     [Header("Bounce Settings")]
-    [SerializeField] private float positionTolerance = 0.05f; // How close to original position before locking
+    // how close to original position before locking
+    [SerializeField] private float positionTolerance = 0.05f; 
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         springJoint = GetComponent<SpringJoint2D>();
-        originalPosition = transform.localPosition; // Use local position relative to parent
+        audioSource = GetComponent<AudioSource>();
+        originalPosition = transform.localPosition;
         
-        // Make sure Y is locked initially
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX | 
-                        RigidbodyConstraints2D.FreezePositionY | 
-                        RigidbodyConstraints2D.FreezeRotation;
+        // y locked at first
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -35,44 +36,53 @@ public class BrickBlockConfig : MonoBehaviour
     IEnumerator ActivateSpringBounce()
     {
         isBouncing = true;
+
+        if (audioSource != null && audioSource.clip != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
+        }
         
-        // Unlock Y position to allow spring to work
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX | 
-                        RigidbodyConstraints2D.FreezeRotation;
+        // unlock y (to bounce)
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
         
-        // Wait a tiny bit for the spring to start moving upward
         yield return new WaitForSeconds(0.1f);
         
-        // Now monitor until it returns to original Y position
         bool hasMovedUp = false;
         
         while (isBouncing)
         {
             float currentY = transform.localPosition.y;
             
-            // Check if box has moved up from original position
             if (currentY > originalPosition.y + positionTolerance)
             {
                 hasMovedUp = true;
             }
             
-            // If it moved up and is now back at or below original position, stop it
             if (hasMovedUp && currentY <= originalPosition.y + positionTolerance)
             {
-                // Snap to exact original position
+                // snap to original position
                 transform.localPosition = new Vector2(originalPosition.x, originalPosition.y);
                 rb.linearVelocity = Vector2.zero;
                 
-                // Lock Y position again
-                rb.constraints = RigidbodyConstraints2D.FreezePositionX | 
-                                RigidbodyConstraints2D.FreezePositionY | 
-                                RigidbodyConstraints2D.FreezeRotation;
+                // lock y
+                rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                
+                isBouncing = false;
+                break;
+            }
+
+            if (currentY < originalPosition.y - positionTolerance)
+            {
+                transform.localPosition = new Vector2(originalPosition.x, originalPosition.y);
+                rb.linearVelocity = Vector2.zero;
+                
+                rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
                 
                 isBouncing = false;
                 break;
             }
             
-            yield return new WaitForFixedUpdate(); // Check every physics frame
+            yield return new WaitForFixedUpdate();
         }
     }
 }
