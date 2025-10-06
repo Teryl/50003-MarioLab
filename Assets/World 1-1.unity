@@ -1445,6 +1445,7 @@ GameObject:
   - component: {fileID: 831953819}
   - component: {fileID: 831953822}
   - component: {fileID: 831953826}
+  - component: {fileID: 831953830}
   - component: {fileID: 831953821}
   - component: {fileID: 831953827}
   - component: {fileID: 831953828}
@@ -1543,7 +1544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 20
   maxSpeed: 40
-  upSpeed: 15
+  upSpeed: 25
   fallGravityMultiplier: 7.5
   lowJumpGravityPenalty: 8
   airTurnPenalty: 1.5
@@ -1752,6 +1753,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &831953830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831953818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 8dd44cb408c221242bf6d5d6730c16f0, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: mario_movement
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1001 &845787749
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -23,12 +23,17 @@ public class PlayerMovement : MonoBehaviour
     public bool isAlive = true;
     private Vector3 startPosition;
 
-    [Header ("Component References")]
+    [Header("Component References")]
     private Rigidbody2D marioBody;
     private SpriteRenderer marioSprite;
     public Animator marioAnimator;
     public AudioSource marioAudio;
     public AudioClip marioDeath;
+
+    // Input System variables
+    private float moveInput = 0f;
+    private bool isJumpPressed = false;
+    private bool isJumpHeld = false;
 
     public void ResetPlayer()
     {
@@ -43,6 +48,10 @@ public class PlayerMovement : MonoBehaviour
         // reset animator
         marioAnimator.SetTrigger("gameRestart");
         marioAnimator.SetBool("onGround", onGroundState);
+        // reset input
+        moveInput = 0f;
+        isJumpPressed = false;
+        isJumpHeld = false;
     }
 
     void GiveDeathImpulse()
@@ -53,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     void PlayJumpSound()
     {
         marioAudio.PlayOneShot(marioAudio.clip);
-    } 
+    }
 
     void Start()
     {
@@ -66,9 +75,27 @@ public class PlayerMovement : MonoBehaviour
         faceRightState = true;
     }
 
+    public void OnMove(InputValue input)
+    {
+        moveInput = input.Get<float>();
+        Debug.Log("Moving");
+    }
+
+    public void OnJump(InputValue input)
+    {
+        isJumpPressed = true;
+        Debug.Log("Jumping");
+    }
+
+    public void OnJumphold(InputValue input)
+    {
+        isJumpHeld = true;
+        Debug.Log("Jump is held for some time.");
+    }
+
     void Update()
     {
-        if (Keyboard.current[Key.A].isPressed && faceRightState)
+        if (moveInput < 0 && faceRightState)
         {
             marioSprite.flipX = false;
             faceRightState = false;
@@ -77,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
                 marioAnimator.SetTrigger("onSkid");
             }
         }
-        else if (Keyboard.current[Key.D].isPressed && !faceRightState)
+        else if (moveInput > 0 && !faceRightState)
         {
             marioSprite.flipX = true;
             faceRightState = true;
@@ -86,11 +113,7 @@ public class PlayerMovement : MonoBehaviour
                 marioAnimator.SetTrigger("onSkid");
             }
         }
-        else if (Keyboard.current[Key.A].isPressed && Keyboard.current[Key.D].isPressed)
-        {
-            marioSprite.flipX = true;
-            faceRightState = true;
-        }
+        
         marioAnimator.SetFloat("xSpeed", Mathf.Abs(marioBody.linearVelocity.x));
     }
 
@@ -104,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             marioAnimator.Play("mario_die");
             marioAudio.PlayOneShot(marioDeath);
             GiveDeathImpulse();
-            
+
             // Start delayed game over through GameManager
             if (GameManager.Instance != null)
             {
@@ -138,31 +161,13 @@ public class PlayerMovement : MonoBehaviour
             GameManager.Instance.RestartGame();
         }
     }
-    void FixedUpdate() //Called 50 times per second
+    void FixedUpdate() // note: called 50 times per second
     {
         if (!isAlive) return;
-        
-        // Movement
-        float moveHorizontal = 0f;
-        if (Keyboard.current != null)
-        {
-            if (Keyboard.current[Key.A].isPressed)
-            {
-                moveHorizontal = -1f;
 
-            }
-            else if (Keyboard.current[Key.D].isPressed)
-            {
-                moveHorizontal = 1f;
-            }
-            else
-            {
-                moveHorizontal = 0f;
-            }
-        }
-
-        Vector2 movement = new Vector2(moveHorizontal, 0);
-        if (Mathf.Abs(moveHorizontal) > 0)
+        // movement
+        Vector2 movement = new Vector2(moveInput, 0);
+        if (Mathf.Abs(moveInput) > 0)
         {
             if (marioBody.linearVelocity.magnitude < maxSpeed)
             {
@@ -173,13 +178,14 @@ public class PlayerMovement : MonoBehaviour
                 marioBody.AddForce(movement * speed);
             }
         }
-        if (Keyboard.current[Key.A].wasReleasedThisFrame || Keyboard.current[Key.D].wasReleasedThisFrame)
+        else
         {
+            // stop horizontal movement when no input
             marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
         }
 
-        // Jump with low jump penalty
-        if (Keyboard.current[Key.Space].isPressed && onGroundState && isAlive)
+        // jump handling
+        if (isJumpPressed && onGroundState && isAlive)
         {
             Vector2 jump = new Vector2(0, upSpeed);
             marioBody.AddForce(jump, ForceMode2D.Impulse);
@@ -187,15 +193,27 @@ public class PlayerMovement : MonoBehaviour
             // update the animator
             marioAnimator.SetBool("onGround", onGroundState);
         }
+
+        isJumpPressed = false;
+
+        // gravity setting
         if (marioBody.linearVelocity.y < -0.01f)
         {
             marioBody.gravityScale = fallGravityMultiplier * originalGravityScale;
-        } else if (marioBody.linearVelocity.y > 0.01f && !Keyboard.current[Key.Space].isPressed)
+        }
+        else if (marioBody.linearVelocity.y > 0.01f && !isJumpHeld)
         {
             marioBody.AddForce(Vector2.up * Physics2D.gravity.y * lowJumpGravityPenalty * marioBody.mass);
-        } else
+        }
+        else
         {
             marioBody.gravityScale = originalGravityScale;
+        }
+
+        // reset jump held state (at end of frame)
+        if (marioBody.linearVelocity.y <= 0)
+        {
+            isJumpHeld = false;
         }
     }
 }
