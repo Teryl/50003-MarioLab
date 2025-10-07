@@ -92,27 +92,17 @@ public class PlayerMovement : MonoBehaviour
         faceRightState = true;
     }
 
-    public void OnMove(InputValue input)
-    {
-        moveInput = input.Get<float>();
-        MoveCheck((int)moveInput);
-        // Debug.Log("Moving");
-    }
-
-    public void OnJump(InputValue input)
+    // note: these will be called by ActionManager
+    public void OnJump()
     {
         isJumpPressed = true;
-        // Debug.Log("Jumping");
     }
 
-    public void OnJumphold(InputValue input)
+    public void OnJumpHold()
     {
         isJumpHeld = true;
-        // Debug.Log("Jump is held for some time.");
     }
-
     
-
     public void FlipMarioSprite(int value)
     {
         if (value == -1 && faceRightState)
@@ -174,14 +164,13 @@ public class PlayerMovement : MonoBehaviour
             marioBody.AddForce(jump, ForceMode2D.Impulse);
             onGroundState = false;
             marioAnimator.SetBool("onGround", onGroundState);
-            // PlayJumpSound();
-            // Debug.Log("Ground jump");
+            Debug.Log("Ground jump");
         }
     }
 
     public void JumpHold()  // hold jump
     {
-        // Debug.Log("Jump is held");
+        Debug.Log("Jump is held");
     }
 
     public void DoubleJump()
@@ -197,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
             justDoubleJumped = true;
             isJumpHeld = true; // treat double jump as if button held
             PlayJumpSound();
-            // Debug.Log("Double jump");
+            Debug.Log("Double jump");
         }
     }
 
@@ -256,7 +245,6 @@ public class PlayerMovement : MonoBehaviour
         if (!isAlive) return;
 
         // movement
-        // Vector2 movement = new Vector2(moveInput, 0);
         if (moving)
         {
             Move(moveInput);
@@ -267,7 +255,7 @@ public class PlayerMovement : MonoBehaviour
             marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
         }
 
-        // jump handling
+        // note: jump handling is done through ActionManager (UnityEvents)
         if (isJumpPressed && isAlive)
         {
             // jump from ground
@@ -275,14 +263,12 @@ public class PlayerMovement : MonoBehaviour
             {
                 Jump();
             }
-            
-            // jump in air (havent double jumped yet)
+            // jump in air (haven't double jumped yet)
             else if (!hasDoubleJumped)
             {
                 DoubleJump();
             }
         }
-
         isJumpPressed = false;
 
         // gravity setting

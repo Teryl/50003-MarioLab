@@ -190,7 +190,7 @@ AudioSource:
   m_GameObject: {fileID: 5339138181113871113}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 3727265890287302523, guid: efd09afa211b586408754d92058f3e8a, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: d885ffc842af744d89f7d595ffcc176a, type: 3}
   m_PlayOnAwake: 0
@@ -290,3 +290,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a17eec38a66497d843fbbb77589f14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinController
+  boxCollectible: 0
+  bounceForce: 5

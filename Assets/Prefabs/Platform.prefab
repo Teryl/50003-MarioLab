@@ -323,7 +323,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrickBlockConfig
   positionTolerance: 0.05
-  bumpSound: {fileID: 0}
 --- !u!82 &7658918052071532755
 AudioSource:
   m_ObjectHideFlags: 0
@@ -333,7 +332,7 @@ AudioSource:
   m_GameObject: {fileID: 8896686190042095105}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6221673382061120722, guid: efd09afa211b586408754d92058f3e8a, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 6f487163c53194893952b1f457060b86, type: 3}
   m_PlayOnAwake: 0
