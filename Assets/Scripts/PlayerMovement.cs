@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     public float maxSpeed;
     public float upSpeed;
+    public float doubleJumpMultiplier = 0.8f;
     public float fallGravityMultiplier;
     public float lowJumpGravityPenalty;
     public float airTurnPenalty;
@@ -35,23 +36,39 @@ public class PlayerMovement : MonoBehaviour
     private bool isJumpPressed = false;
     private bool isJumpHeld = false;
 
+    // double jump mechanic
+    private bool hasDoubleJumped = false;
+    private bool justDoubleJumped = false; // disable low jump penalty right after double jump
+
+    // movement tracking
+    private bool moving = false;
+
+
+
     public void ResetPlayer()
     {
         // reset position
         marioBody.transform.position = startPosition;
+
         // reset sprite direction
         marioSprite.flipX = true;
         faceRightState = true;
+
         // reset state
         onGroundState = true;
         isAlive = true;
+
         // reset animator
         marioAnimator.SetTrigger("gameRestart");
         marioAnimator.SetBool("onGround", onGroundState);
+
         // reset input
         moveInput = 0f;
         isJumpPressed = false;
         isJumpHeld = false;
+        hasDoubleJumped = false;
+        justDoubleJumped = false;
+        moving = false;
     }
 
     void GiveDeathImpulse()
@@ -78,42 +95,114 @@ public class PlayerMovement : MonoBehaviour
     public void OnMove(InputValue input)
     {
         moveInput = input.Get<float>();
-        Debug.Log("Moving");
+        MoveCheck((int)moveInput);
+        // Debug.Log("Moving");
     }
 
     public void OnJump(InputValue input)
     {
         isJumpPressed = true;
-        Debug.Log("Jumping");
+        // Debug.Log("Jumping");
     }
 
     public void OnJumphold(InputValue input)
     {
         isJumpHeld = true;
-        Debug.Log("Jump is held for some time.");
+        // Debug.Log("Jump is held for some time.");
+    }
+
+    
+
+    public void FlipMarioSprite(int value)
+    {
+        if (value == -1 && faceRightState)
+        {
+            faceRightState = false;
+            marioSprite.flipX = false;
+            if (marioBody.linearVelocity.x > 0.05f)
+                marioAnimator.SetTrigger("onSkid");
+        }
+        else if (value == 1 && !faceRightState)
+        {
+            faceRightState = true;
+            marioSprite.flipX = true;
+            if (marioBody.linearVelocity.x < -0.05f)
+                marioAnimator.SetTrigger("onSkid");
+        }
+    }
+    
+    public void MoveCheck(int value)  // note: checks movement input and update the moving state
+    {
+        if (value == 0)
+        {
+            moving = false;
+            moveInput = 0;
+        }
+        else
+        {
+            FlipMarioSprite(value);
+            moving = true;
+            moveInput = value;
+        }
+    }
+
+    void Move(float value)
+    {
+        Vector2 movement = new Vector2(value, 0);
+        if (Mathf.Abs(value) > 0)
+        {
+            if (marioBody.linearVelocity.magnitude < maxSpeed)
+            {
+                if (!onGroundState)
+                {
+                    movement.x *= airTurnPenalty - 1;
+                }
+                marioBody.AddForce(movement * speed);
+            }
+        }
+        else
+        {
+            marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
+        }
+    }
+
+    public void Jump() // jump from ground
+    {
+        if (isAlive && onGroundState)
+        {
+            Vector2 jump = new Vector2(0, upSpeed);
+            marioBody.AddForce(jump, ForceMode2D.Impulse);
+            onGroundState = false;
+            marioAnimator.SetBool("onGround", onGroundState);
+            // PlayJumpSound();
+            // Debug.Log("Ground jump");
+        }
+    }
+
+    public void JumpHold()  // hold jump
+    {
+        // Debug.Log("Jump is held");
+    }
+
+    public void DoubleJump()
+    {
+        if (isAlive && !onGroundState && !hasDoubleJumped)
+        {
+            // reset vertical velocity
+            marioBody.linearVelocity = new Vector2(marioBody.linearVelocity.x, 0);
+
+            Vector2 doubleJump = new Vector2(0, upSpeed * doubleJumpMultiplier);
+            marioBody.AddForce(doubleJump, ForceMode2D.Impulse);
+            hasDoubleJumped = true;
+            justDoubleJumped = true;
+            isJumpHeld = true; // treat double jump as if button held
+            PlayJumpSound();
+            // Debug.Log("Double jump");
+        }
     }
 
     void Update()
     {
-        if (moveInput < 0 && faceRightState)
-        {
-            marioSprite.flipX = false;
-            faceRightState = false;
-            if (marioBody.linearVelocity.x > 0.1f)
-            {
-                marioAnimator.SetTrigger("onSkid");
-            }
-        }
-        else if (moveInput > 0 && !faceRightState)
-        {
-            marioSprite.flipX = true;
-            faceRightState = true;
-            if (marioBody.linearVelocity.x < -0.1f)
-            {
-                marioAnimator.SetTrigger("onSkid");
-            }
-        }
-        
         marioAnimator.SetFloat("xSpeed", Mathf.Abs(marioBody.linearVelocity.x));
     }
 
@@ -147,6 +236,7 @@ public class PlayerMovement : MonoBehaviour
                 if (contact.normal.y > 0.5f)
                 {
                     onGroundState = true;
+                    hasDoubleJumped = false;
                     marioAnimator.SetBool("onGround", onGroundState);
                     break;
                 }
@@ -166,17 +256,10 @@ public class PlayerMovement : MonoBehaviour
         if (!isAlive) return;
 
         // movement
-        Vector2 movement = new Vector2(moveInput, 0);
-        if (Mathf.Abs(moveInput) > 0)
+        // Vector2 movement = new Vector2(moveInput, 0);
+        if (moving)
         {
-            if (marioBody.linearVelocity.magnitude < maxSpeed)
-            {
-                if (!onGroundState)
-                {
-                    movement.x *= airTurnPenalty - 1;
-                }
-                marioBody.AddForce(movement * speed);
-            }
+            Move(moveInput);
         }
         else
         {
@@ -185,13 +268,19 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // jump handling
-        if (isJumpPressed && onGroundState && isAlive)
+        if (isJumpPressed && isAlive)
         {
-            Vector2 jump = new Vector2(0, upSpeed);
-            marioBody.AddForce(jump, ForceMode2D.Impulse);
-            onGroundState = false;
-            // update the animator
-            marioAnimator.SetBool("onGround", onGroundState);
+            // jump from ground
+            if (onGroundState)
+            {
+                Jump();
+            }
+            
+            // jump in air (havent double jumped yet)
+            else if (!hasDoubleJumped)
+            {
+                DoubleJump();
+            }
         }
 
         isJumpPressed = false;
@@ -200,8 +289,9 @@ public class PlayerMovement : MonoBehaviour
         if (marioBody.linearVelocity.y < -0.01f)
         {
             marioBody.gravityScale = fallGravityMultiplier * originalGravityScale;
+            justDoubleJumped = false;
         }
-        else if (marioBody.linearVelocity.y > 0.01f && !isJumpHeld)
+        else if (marioBody.linearVelocity.y > 0.01f && !isJumpHeld && !justDoubleJumped)
         {
             marioBody.AddForce(Vector2.up * Physics2D.gravity.y * lowJumpGravityPenalty * marioBody.mass);
         }

@@ -32,6 +32,15 @@
                     "processors": "",
                     "interactions": "Hold(duration=0.2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "doublejump",
+                    "type": "Button",
+                    "id": "ef44691c-e10d-493b-8f09-d7422246d437",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -98,6 +107,17 @@
                     "processors": "",
                     "groups": ";Keyboard",
                     "action": "jumphold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8d9a6f37-0e68-47cb-8efe-8ce691781449",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "doublejump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

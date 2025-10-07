@@ -118,6 +118,15 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold(duration=0.2)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""doublejump"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef44691c-e10d-493b-8f09-d7422246d437"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -186,6 +195,17 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
                     ""action"": ""jumphold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8d9a6f37-0e68-47cb-8efe-8ce691781449"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""doublejump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -209,6 +229,7 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
         m_mario_movement_move = m_mario_movement.FindAction("move", throwIfNotFound: true);
         m_mario_movement_jump = m_mario_movement.FindAction("jump", throwIfNotFound: true);
         m_mario_movement_jumphold = m_mario_movement.FindAction("jumphold", throwIfNotFound: true);
+        m_mario_movement_doublejump = m_mario_movement.FindAction("doublejump", throwIfNotFound: true);
     }
 
     ~@MarioActions()
@@ -292,6 +313,7 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_mario_movement_move;
     private readonly InputAction m_mario_movement_jump;
     private readonly InputAction m_mario_movement_jumphold;
+    private readonly InputAction m_mario_movement_doublejump;
     /// <summary>
     /// Provides access to input actions defined in input action map "mario_movement".
     /// </summary>
@@ -315,6 +337,10 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "mario_movement/jumphold".
         /// </summary>
         public InputAction @jumphold => m_Wrapper.m_mario_movement_jumphold;
+        /// <summary>
+        /// Provides access to the underlying input action "mario_movement/doublejump".
+        /// </summary>
+        public InputAction @doublejump => m_Wrapper.m_mario_movement_doublejump;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -350,6 +376,9 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
             @jumphold.started += instance.OnJumphold;
             @jumphold.performed += instance.OnJumphold;
             @jumphold.canceled += instance.OnJumphold;
+            @doublejump.started += instance.OnDoublejump;
+            @doublejump.performed += instance.OnDoublejump;
+            @doublejump.canceled += instance.OnDoublejump;
         }
 
         /// <summary>
@@ -370,6 +399,9 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
             @jumphold.started -= instance.OnJumphold;
             @jumphold.performed -= instance.OnJumphold;
             @jumphold.canceled -= instance.OnJumphold;
+            @doublejump.started -= instance.OnDoublejump;
+            @doublejump.performed -= instance.OnDoublejump;
+            @doublejump.canceled -= instance.OnDoublejump;
         }
 
         /// <summary>
@@ -444,5 +476,12 @@ public partial class @MarioActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJumphold(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "doublejump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDoublejump(InputAction.CallbackContext context);
     }
 }
