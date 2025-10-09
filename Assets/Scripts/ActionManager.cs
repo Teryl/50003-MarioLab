@@ -14,7 +14,6 @@ public class ActionManager : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("[ActionManager] JumpHold");
             jumpHold.Invoke();
         }
     }
@@ -24,7 +23,6 @@ public class ActionManager : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("[ActionManager] Jump");
             jump.Invoke();
         }
     }
@@ -33,7 +31,6 @@ public class ActionManager : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("[ActionManager] DoubleJump");
             doubleJump.Invoke();
         }
     }
@@ -44,13 +41,11 @@ public class ActionManager : MonoBehaviour
         if (context.started)
         {
             int faceRight = context.ReadValue<float>() > 0 ? 1 : -1;
-            Debug.Log($"[ActionManager] Moving - direction: {faceRight}");
             moveCheck.Invoke(faceRight);
         }
         if (context.canceled)
         {
             moveCheck.Invoke(0);
-            Debug.Log("[ActionManager] Move stopped");
         }
     }
 }

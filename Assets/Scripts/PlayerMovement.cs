@@ -164,13 +164,15 @@ public class PlayerMovement : MonoBehaviour
             marioBody.AddForce(jump, ForceMode2D.Impulse);
             onGroundState = false;
             marioAnimator.SetBool("onGround", onGroundState);
-            Debug.Log("Ground jump");
+            // Debug.Log("Ground jump");
         }
     }
 
     public void JumpHold()  // hold jump
     {
-        Debug.Log("Jump is held");
+        // Debug.Log("Jump is held");
+        isJumpHeld = true;
+
     }
 
     public void DoubleJump()
@@ -184,9 +186,9 @@ public class PlayerMovement : MonoBehaviour
             marioBody.AddForce(doubleJump, ForceMode2D.Impulse);
             hasDoubleJumped = true;
             justDoubleJumped = true;
-            isJumpHeld = true; // treat double jump as if button held
+            isJumpHeld = true;
             PlayJumpSound();
-            Debug.Log("Double jump");
+            // Debug.Log("Double jump");
         }
     }
 
@@ -200,16 +202,29 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Enemy") && isAlive)
         {
-            // Start death sequence
-            isAlive = false;
-            marioAnimator.Play("mario_die");
-            marioAudio.PlayOneShot(marioDeath);
-            GiveDeathImpulse();
-
-            // Start delayed game over through GameManager
-            if (GameManager.Instance != null)
+            if (transform.position.y > collider.transform.position.y + 0.5f)
             {
-                GameManager.Instance.StartDeathSequence();
+                GoombaController goomba = collider.GetComponent<GoombaController>();
+                if (goomba != null)
+                {
+                    goomba.TakeStomp();
+                }
+                
+                marioBody.linearVelocity = new Vector2(marioBody.linearVelocity.x, 0);
+                marioBody.AddForce(Vector2.up * 8f, ForceMode2D.Impulse);
+            }
+            else
+            {
+                Debug.Log("Player has touched an enemy.");
+                isAlive = false;
+                marioAnimator.Play("mario_die");
+                marioAudio.PlayOneShot(marioDeath);
+                GiveDeathImpulse();
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.StartDeathSequence();
+                }
             }
         }
     }

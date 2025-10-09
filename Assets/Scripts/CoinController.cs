@@ -13,7 +13,7 @@ public class CoinController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("CoinController script is active.");
+        // Debug.Log("CoinController script is active.");
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
 
@@ -25,6 +25,14 @@ public class CoinController : MonoBehaviour
         {
             rb.AddForce(new Vector2(0, bounceForce), ForceMode2D.Impulse);
         }
+    }
+
+    public void ResetCoin()
+    {
+        isCollected = false;
+        GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<Collider2D>().enabled = true;
+        // Debug.Log("Coin reset.");
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -11,11 +11,15 @@ public class EnemyMovement : MonoBehaviour
     private Vector2 velocity;
 
     private Rigidbody2D enemyBody;
-    public Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
+    [System.NonSerialized]
+    public Vector3 startPosition;
+    public bool isDefeated = false;
     void Start()
     {
         enemyBody = GetComponent<Rigidbody2D>();
         originalX = transform.position.x;
+        startPosition = transform.position;
         ComputeVelocity();
     }
 
@@ -23,7 +27,18 @@ public class EnemyMovement : MonoBehaviour
     {
         velocity = new Vector2((movingRight ? 1 : -1) * maxDistance / speed, 0);
     }
-
+    public void ResetEnemy()
+    {
+        transform.position = startPosition;
+        movingRight = true;
+        Collider2D collider = GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            collider.enabled = true;
+        }
+        ComputeVelocity();
+        isDefeated = false;
+    }
     void MoveGoomba()
     {
         enemyBody.MovePosition(enemyBody.position + velocity * Time.fixedDeltaTime);

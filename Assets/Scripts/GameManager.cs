@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -74,11 +75,16 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void OnEnemyDefeated()
+    {
+        AddScore(5);
+    }
+
     public void AddScore(int points)
     {
         score += points;
         UpdateScoreDisplay();
-        Debug.Log("Score: " + score);
+        // Debug.Log("Score: " + score);
     }
 
     void UpdateScoreDisplay()
@@ -122,7 +128,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("Game Over!");
+        // Debug.Log("Game Over!");
 
         Time.timeScale = 0.0f;
 
@@ -144,7 +150,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Debug.Log("Restart!");
+        // Debug.Log("Restart!");
 
         StopAllCoroutines();
         isDeathSequenceActive = false;
@@ -200,7 +206,8 @@ public class GameManager : MonoBehaviour
                 EnemyMovement enemyMovement = eachChild.GetComponent<EnemyMovement>();
                 if (enemyMovement != null)
                 {
-                    eachChild.transform.localPosition = enemyMovement.startPosition;
+                    eachChild.gameObject.SetActive(true);
+                    enemyMovement.ResetEnemy();
                 }
             }
         }
@@ -226,24 +233,12 @@ public class GameManager : MonoBehaviour
     {
         if (collectibles != null)
         {
-            foreach (Transform eachChild in collectibles.transform)
-            {
-                CoinController coinController = eachChild.GetComponent<CoinController>();
-                if (coinController != null)
-                {
-                    Destroy(coinController.gameObject);
-                }
-            }
-        }
-        // also respawn stationary coins
-        CoinController[] allCoins = collectibles.GetComponentsInChildren<CoinController>();
-        foreach (CoinController coin in allCoins)
-        {
-            if (coin != null && !coin.boxCollectible)
+            CoinController[] allCoins = collectibles.GetComponentsInChildren<CoinController>();
+
+            foreach (CoinController coin in allCoins)
             {
                 coin.gameObject.SetActive(true);
-                coin.GetComponent<SpriteRenderer>().enabled = true;
-                coin.GetComponent<Collider2D>().enabled = true;
+                coin.ResetCoin();
             }
         }
     }

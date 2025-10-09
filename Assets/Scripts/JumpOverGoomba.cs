@@ -40,12 +40,10 @@ public class JumpOverGoomba : MonoBehaviour
     {
         if (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, maxDistance, layerMask))
         {
-            Debug.Log("On Ground");
             return true;
         }
         else
         {
-            Debug.Log("In Air");
             return false;
         }
     }
