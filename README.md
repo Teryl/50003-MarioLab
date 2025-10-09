@@ -8,41 +8,44 @@ This project is a collection of progressively complex labs that build Super Mari
 | Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
 
 
-## Lab 2: Unity for Babies
+## Lab 3: Unity for Toddlers
 This lab focused on Character Animations, Camera movement, and interactables with in-game physics (Physics2D).
 
-#### In this git repo, **lab2** will be the *Main Submission repository*.
+#### In this git repo, **lab3** will be the *Main Submission repository*.
 
 ### Additional features
-#### Animations
-- Mario Animation
-  - Jumping, Running, Skidding, and when Mario dies (death sequence)
-- Goomba Animation
+#### Character Updates
+- Added Double Jump for Mario
+  - When jumping, mario can jump again while he is in mid-air. This double jump is added so Mario can access high blocks easily.
+- Added the ability to kill Goomba by stomping it
+  - When Mario jumps on top of Goomba, he will now kill the Goomba instead of dying
 
-#### Camera Movement
-- Added world borders so Mario doesn’t fall into oblivion
-- The main camera is affected by this border collision,  so now it doesn't show the world’s limit/edge.
+### Points System
+- Added stomping Goomba
+  - Mario needs to kill Goomba in order to gain points by jumping on top of the Goomba (stomping it)
+  - This will give more points compared to just collecting the coins
+  - Added Goomba spawner, so Mario can score more big points
+- Removed jumping over Goomba to gain points
 
-#### Sound Effects
-- Added sound when Mario jumps
-- Added sound when Mario dies
-- Added sound when Mario collects a coin
-- Added sound when Mario hits blocks
-- Added Background Music
+### Audio
+- Added Audio Mixer into the project
+- Added SFX when performing a Double jump
+- Added SFX when stomping on Goomba
 
-#### Interactable Objects
-- Added Question Box
-  - When idle, the block blinks (alternatively)
-  - When hit from below, the block will eject a coin and turn into a solid block.
-  - Added Coin for Mario to collect.
-- Added Brick Blocks
-  - When hit from below, the block will also spring upwards, then it will fall back to its original position.
+### Input System
+- Implemented new Input System
+  - Updated the Input system to use InputActions
+
+### Observer Pattern
+- Implemented the Observer Pattern into our codes
+  - Used UnityEvents to call the functions
+  - Added ActionManager.cs for callbacks
 
 ## Videos
-**[Lab 2 - Main Submission](https://tinyurl.com/34rseytx)**
+**COMING SOON**
 > Gameplay video is inside this link
 
 ## Detailed Report
-**[https://shorturl.at/FNC5Q](https://tinyurl.com/2adayk49)**
-> Lab 2 Full Documentation
+**[https://tinyurl.com/5b9abcra](https://tinyurl.com/5b9abcra)**
+> Lab 3 Full Documentation
 
