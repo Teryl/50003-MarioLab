@@ -9,7 +9,7 @@ This project is a collection of progressively complex labs that build Super Mari
 
 
 ## Lab 3: Unity for Toddlers
-This lab focused on Character Animations, Camera movement, and interactables with in-game physics (Physics2D).
+This lab focused on the Input System, Observer Pattern, Audio Management and SFX, and also updating the Points mechanic.
 
 #### In this git repo, **lab3** will be the *Main Submission repository*.
 
