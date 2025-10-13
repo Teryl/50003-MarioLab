@@ -42,7 +42,7 @@ This lab focused on the Input System, Observer Pattern, Audio Management and SFX
   - Added ActionManager.cs for callbacks
 
 ## Videos
-**COMING SOON**
+**[Lab 3 - Main Submission](https://tinyurl.com/taks4kzf)**
 > Gameplay video is inside this link
 
 ## Detailed Report
