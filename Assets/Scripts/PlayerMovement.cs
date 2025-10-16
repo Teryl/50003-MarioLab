@@ -31,43 +31,29 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource marioAudio;
     public AudioClip marioDeath;
 
-    // Input System variables
     private float moveInput = 0f;
     private bool isJumpPressed = false;
     private bool isJumpHeld = false;
 
-    // double jump mechanic
     private bool hasDoubleJumped = false;
-    private bool justDoubleJumped = false; // disable low jump penalty right after double jump
+    private bool justDoubleJumped = false;
 
-    // movement tracking
     private bool moving = false;
 
 
 
     public void ResetPlayer()
     {
-        // reset physics - CRITICAL: stop all movement first
         marioBody.linearVelocity = Vector2.zero;
         marioBody.angularVelocity = 0f;
         marioBody.gravityScale = originalGravityScale;
-
-        // reset position
         marioBody.transform.position = startPosition;
-
-        // reset sprite direction
         marioSprite.flipX = true;
         faceRightState = true;
-
-        // reset state
         onGroundState = true;
         isAlive = true;
-
-        // reset animator
         marioAnimator.SetTrigger("gameRestart");
         marioAnimator.SetBool("onGround", onGroundState);
-
-        // reset input
         moveInput = 0f;
         isJumpPressed = false;
         isJumpHeld = false;
@@ -97,7 +83,6 @@ public class PlayerMovement : MonoBehaviour
         faceRightState = true;
     }
 
-    // note: these will be called by ActionManager
     public void OnJump()
     {
         isJumpPressed = true;
@@ -126,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-    public void MoveCheck(int value)  // note: checks movement input and update the moving state
+    public void MoveCheck(int value)
     {
         if (value == 0)
         {
@@ -161,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Jump() // jump from ground
+    public void Jump()
     {
         if (isAlive && onGroundState)
         {
@@ -169,31 +154,25 @@ public class PlayerMovement : MonoBehaviour
             marioBody.AddForce(jump, ForceMode2D.Impulse);
             onGroundState = false;
             marioAnimator.SetBool("onGround", onGroundState);
-            // Debug.Log("Ground jump");
         }
     }
 
-    public void JumpHold()  // hold jump
+    public void JumpHold()
     {
-        // Debug.Log("Jump is held");
         isJumpHeld = true;
-
     }
 
     public void DoubleJump()
     {
         if (isAlive && !onGroundState && !hasDoubleJumped)
         {
-            // reset vertical velocity
             marioBody.linearVelocity = new Vector2(marioBody.linearVelocity.x, 0);
-
             Vector2 doubleJump = new Vector2(0, upSpeed * doubleJumpMultiplier);
             marioBody.AddForce(doubleJump, ForceMode2D.Impulse);
             hasDoubleJumped = true;
             justDoubleJumped = true;
             isJumpHeld = true;
             PlayJumpSound();
-            // Debug.Log("Double jump");
         }
     }
 
@@ -202,7 +181,6 @@ public class PlayerMovement : MonoBehaviour
         marioAnimator.SetFloat("xSpeed", Mathf.Abs(marioBody.linearVelocity.x));
     }
 
-    // Death check
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.CompareTag("Enemy") && isAlive)
@@ -222,7 +200,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.Log("Player has touched an enemy.");
                 
-                // Let GameManager handle the death sequence
                 if (GameManager.instance != null)
                 {
                     GameManager.instance.KillPlayer();
@@ -235,10 +212,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform")) && !onGroundState)
         {
-            // Check if collision is from the top
             foreach (ContactPoint2D contact in collision.contacts)
             {
-                // If the contact normal points upwards, it's a top collision
                 if (contact.normal.y > 0.5f)
                 {
                     onGroundState = true;
@@ -257,42 +232,33 @@ public class PlayerMovement : MonoBehaviour
             GameManager.instance.RestartGame();
         }
     }
-    void FixedUpdate() // note: called 50 times per second
+    void FixedUpdate()
     {
         if (!isAlive) 
         {
-            // During death, allow gravity to work but prevent any input-based movement
             return;
         }
 
-        // movement
         if (moving)
         {
             Move(moveInput);
         }
         else
         {
-            // stop horizontal movement when no input
             marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
         }
-
-        // note: jump handling is done through ActionManager (UnityEvents)
         if (isJumpPressed && isAlive)
         {
-            // jump from ground
             if (onGroundState)
             {
                 Jump();
             }
-            // jump in air (haven't double jumped yet)
             else if (!hasDoubleJumped)
             {
                 DoubleJump();
             }
         }
         isJumpPressed = false;
-
-        // gravity setting
         if (marioBody.linearVelocity.y < -0.01f)
         {
             marioBody.gravityScale = fallGravityMultiplier * originalGravityScale;
@@ -306,8 +272,6 @@ public class PlayerMovement : MonoBehaviour
         {
             marioBody.gravityScale = originalGravityScale;
         }
-
-        // reset jump held state (at end of frame)
         if (marioBody.linearVelocity.y <= 0)
         {
             isJumpHeld = false;

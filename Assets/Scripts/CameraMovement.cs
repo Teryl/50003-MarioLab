@@ -12,7 +12,7 @@ public class CameraMovement : MonoBehaviour
     public Transform startLimit;
     public Transform endLimit;
     public Transform topLimit;
-    public bool useBoundaries = true; // Enable/disable boundaries (enabled by defaut)
+    public bool useBoundaries = true;
 
     void FixedUpdate()
     {
@@ -21,19 +21,13 @@ public class CameraMovement : MonoBehaviour
             Vector3 targetPosition = target.position + offset;
             Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
 
-            // Apply boundary clamping if enabled
             if (useBoundaries)
             {
-                // Calculate viewport half width in real-time
                 Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0));
                 float viewportHalfWidth = Mathf.Abs(bottomLeft.x - this.transform.position.x);
                 float viewportHalfHeight = Mathf.Abs(bottomLeft.y - this.transform.position.y);
-
-                // Horizontal boundaries
                 float minX = (startLimit != null) ? startLimit.position.x + viewportHalfWidth : float.MinValue;
                 float maxX = (endLimit != null) ? endLimit.position.x - viewportHalfWidth : float.MaxValue;
-
-                // Vertical boundaries
                 float minY = (bottomLeft.y + viewportHalfHeight);
                 float maxY = (topLimit != null) ? topLimit.position.y - viewportHalfHeight : float.MaxValue;
                 
@@ -49,6 +43,6 @@ public class CameraMovement : MonoBehaviour
     public void ResetCamera(Vector3 position)
     {
         transform.position = position;
-        velocity = Vector3.zero; // Clear velocity to prevent smooth damp issues
+        velocity = Vector3.zero;
     }
 }

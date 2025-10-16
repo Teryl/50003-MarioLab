@@ -7,7 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
-    [Header("Unity Events")]
+    [Header("ScriptableObject Events")]
+    public GameEvent onGameStart;
+    public GameEvent onGameRestart;
+    public IntGameEvent onScoreChanged;
+    public IntGameEvent onGameOver;
+
+    [Header("Legacy Unity Events (for backward compatibility)")]
     public UnityEvent gameStart;
     public UnityEvent gameRestart;
     public UnityEvent<int> scoreChanged;
@@ -62,7 +68,10 @@ public class GameManager : Singleton<GameManager>
             backgroundMusic.Play();
         }
 
-        // Invoke game start event - HUDManager will handle hiding game over UI
+        if (onGameStart != null)
+        {
+            onGameStart.Raise();
+        }
         gameStart?.Invoke();
     }
 
@@ -73,7 +82,6 @@ public class GameManager : Singleton<GameManager>
 
     public void OnPortalEnter(string sceneName)
     {
-        // Load the specified scene in Single mode (replaces current scene)
         if (!string.IsNullOrEmpty(sceneName))
         {
             Debug.Log("Loading scene: " + sceneName);
@@ -89,8 +97,11 @@ public class GameManager : Singleton<GameManager>
     {
         score += points;
         UpdateScoreDisplay();
+        if (onScoreChanged != null)
+        {
+            onScoreChanged.Raise(score);
+        }
         scoreChanged?.Invoke(score);
-        // Debug.Log("Score: " + score);
     }
 
     void UpdateScoreDisplay()
@@ -101,42 +112,31 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // Centralized method to kill the player (called by enemies, poison mushrooms, etc.)
     public void KillPlayer()
     {
-        // Find the player in the current scene
         PlayerMovement player = FindPlayerInScene();
         if (player != null && player.isAlive)
         {
             Debug.Log("Player is being killed!");
-            
-            // Set player as dead
+            if (backgroundMusic != null && backgroundMusic.isPlaying)
+            {
+                backgroundMusic.Stop();
+            }
             player.isAlive = false;
-            
-            // Get rigidbody
             Rigidbody2D marioBody = player.GetComponent<Rigidbody2D>();
             if (marioBody != null)
             {
-                // Stop all horizontal movement
                 marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
-                
-                // Give death impulse (Mario jumps up when dying)
                 marioBody.AddForce(Vector2.up * player.deathImpulse, ForceMode2D.Impulse);
             }
-            
-            // Play death animation
             if (player.marioAnimator != null)
             {
                 player.marioAnimator.Play("mario_die");
             }
-            
-            // Play death sound
             if (player.marioAudio != null && player.marioDeath != null)
             {
                 player.marioAudio.PlayOneShot(player.marioDeath);
             }
-            
-            // Start the death sequence (game over after delay)
             StartDeathSequence();
         }
     }
@@ -146,21 +146,15 @@ public class GameManager : Singleton<GameManager>
         if (!isDeathSequenceActive)
         {
             isDeathSequenceActive = true;
-
-            // Stop background music immediately
             if (backgroundMusic != null && backgroundMusic.isPlaying)
             {
                 backgroundMusic.Stop();
             }
-
-            // Find and disable camera movement in current scene
             CameraMovement cameraMovement = FindFirstObjectByType<CameraMovement>();
             if (cameraMovement != null)
             {
                 cameraMovement.enabled = false;
             }
-
-            // Start the death sequence coroutine
             StartCoroutine(DeathSequenceCoroutine());
         }
     }
@@ -174,54 +168,40 @@ public class GameManager : Singleton<GameManager>
 
     public void GameOver()
     {
-        // Debug.Log("Game Over!");
-
         Time.timeScale = 0.0f;
-
-        // Invoke game over event - HUDManager will handle the UI
+        if (onGameOver != null)
+        {
+            onGameOver.Raise(score);
+        }
         gameOver?.Invoke(score);
     }
 
-    // Helper method to find the player in the current scene
     private PlayerMovement FindPlayerInScene()
     {
-        // Try to find by tag first (most reliable)
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
             return playerObject.GetComponent<PlayerMovement>();
         }
-
-        // Fallback: search for PlayerMovement component in scene
         PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
         if (player != null)
         {
             return player;
         }
-
         return null;
     }
 
     public void RestartGame()
     {
-        // Debug.Log("Restart!");
-
-        // Stop all coroutines and reset death sequence flag
         StopAllCoroutines();
         isDeathSequenceActive = false;
-
-        // Reset time scale first (important for animations and physics)
         Time.timeScale = 1.0f;
-
-        // Find and reset camera in current scene
         CameraMovement cameraMovement = FindFirstObjectByType<CameraMovement>();
         if (cameraMovement != null)
         {
             cameraMovement.enabled = true;
             cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
         }
-
-        // Find and reset the player in the current scene
         PlayerMovement currentPlayer = FindPlayerInScene();
         if (currentPlayer != null)
         {
@@ -231,21 +211,21 @@ public class GameManager : Singleton<GameManager>
         {
             Debug.LogWarning("Could not find player in current scene to reset!");
         }
-
-        // Reset all game objects
         ResetEnemies();
         ResetMysteryBoxes();
         ResetCollectibles();
-
-        // Reset score
         score = 0;
         UpdateScoreDisplay();
+        if (onScoreChanged != null)
+        {
+            onScoreChanged.Raise(score);
+        }
         scoreChanged?.Invoke(score);
-
-        // Invoke game restart event for any listeners
+        if (onGameRestart != null)
+        {
+            onGameRestart.Raise();
+        }
         gameRestart?.Invoke();
-
-        // Restart background music
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
@@ -255,7 +235,6 @@ public class GameManager : Singleton<GameManager>
 
     void ResetEnemies()
     {
-        // Find all EnemyMovement components in the current scene
         EnemyMovement[] allEnemies = FindObjectsByType<EnemyMovement>(FindObjectsSortMode.None);
         foreach (EnemyMovement enemy in allEnemies)
         {
@@ -269,7 +248,6 @@ public class GameManager : Singleton<GameManager>
 
     void ResetMysteryBoxes()
     {
-        // Find all MysteryBox components in the current scene
         MysteryBox[] allMysteryBoxes = FindObjectsByType<MysteryBox>(FindObjectsSortMode.None);
         foreach (MysteryBox mysteryBox in allMysteryBoxes)
         {
@@ -282,7 +260,6 @@ public class GameManager : Singleton<GameManager>
 
     void ResetCollectibles()
     {
-        // Find all CoinController components in the current scene
         CoinController[] allCoins = FindObjectsByType<CoinController>(FindObjectsSortMode.None);
         foreach (CoinController coin in allCoins)
         {
@@ -291,7 +268,6 @@ public class GameManager : Singleton<GameManager>
                 coin.ResetCoin();
             }
         }
-
         foreach (PoisonMushroom mushroom in FindObjectsByType<PoisonMushroom>(FindObjectsSortMode.None))
         {
             if (mushroom != null)
@@ -304,6 +280,29 @@ public class GameManager : Singleton<GameManager>
     public void RestartButtonCallback()
     {
         RestartGame();
-        menuSFX?.Play();
+        AudioSource currentMenuSFX = FindMenuSFXInScene();
+        if (currentMenuSFX != null)
+        {
+            currentMenuSFX.Play();
+        }
+    }
+
+    private AudioSource FindMenuSFXInScene()
+    {
+        GameObject menuSFXObject = GameObject.Find("MenuSFX");
+        if (menuSFXObject != null)
+        {
+            AudioSource audio = menuSFXObject.GetComponent<AudioSource>();
+            if (audio != null)
+            {
+                return audio;
+            }
+        }
+        GameObject taggedObject = GameObject.FindGameObjectWithTag("MenuSFX");
+        if (taggedObject != null)
+        {
+            return taggedObject.GetComponent<AudioSource>();
+        }
+        return null;
     }
 }

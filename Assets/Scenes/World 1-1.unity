@@ -26414,6 +26414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1827928225}
   - component: {fileID: 1827928224}
+  - component: {fileID: 1827928226}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -26433,16 +26434,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776450ddad91648e880676f1f74aff4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  onGameStart: {fileID: 0}
+  onGameRestart: {fileID: 0}
+  onScoreChanged: {fileID: 0}
+  onGameOver: {fileID: 0}
   gameStart:
     m_PersistentCalls:
       m_Calls: []
   gameRestart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2067583816}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 11400000, guid: 5a6d384f1b8614231bd34f799ea7a6b8, type: 2}
+        m_TargetAssemblyTypeName: GameEvent, Assembly-CSharp
+        m_MethodName: Raise
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -26509,6 +26514,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1827928226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827928223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 002998ccae7934b3da13431775a1a022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
+  gameEvent: {fileID: 11400000, guid: 5a6d384f1b8614231bd34f799ea7a6b8, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2067583816}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1828995917
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28399,7 +28432,7 @@ GameObject:
   - component: {fileID: 5740213300054835543}
   - component: {fileID: 5797936232156711214}
   m_Layer: 0
-  m_Name: Menu SFX
+  m_Name: MenuSFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

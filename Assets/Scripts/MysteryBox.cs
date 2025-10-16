@@ -20,7 +20,6 @@ public class MysteryBox : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         originalPosition = transform.localPosition;
-
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
 
@@ -43,7 +42,6 @@ public class MysteryBox : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && !isUsed)
         {
             Vector2 hitDirection = collision.contacts[0].normal;
-
             if (hitDirection.y > 0.5f)
             {
                 isUsed = true;
@@ -54,7 +52,6 @@ public class MysteryBox : MonoBehaviour
                     activeCollectible = Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
                     activeCollectible.GetComponent<CoinController>().boxCollectible = true;
                 }
-
             }
         }
     }

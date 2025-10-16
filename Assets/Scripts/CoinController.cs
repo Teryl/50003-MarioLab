@@ -13,14 +13,12 @@ public class CoinController : MonoBehaviour
 
     void Start()
     {
-        // Debug.Log("CoinController script is active.");
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
 
         if (!boxCollectible)
         {
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-
         }
         else
         {

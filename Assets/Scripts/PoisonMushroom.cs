@@ -46,18 +46,12 @@ public class PoisonMushroom : MonoBehaviour
         if (other.CompareTag("Player") && !isCollected)
         {
             isCollected = true;
-
-            // Play collection sound
             if (audioSource != null && poisonCollectSound != null)
             {
                 audioSource.PlayOneShot(poisonCollectSound);
             }
-
-            // Hide the mushroom visually
             GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<Collider2D>().enabled = false;
-
-            // Start the poison countdown
             if (!isPoisonActive)
             {
                 StartCoroutine(PoisonCountdown());
@@ -76,11 +70,7 @@ public class PoisonMushroom : MonoBehaviour
         isPoisonActive = true;
         
         Debug.Log("Mario has been poisoned! Death in " + poisonDuration + " seconds...");
-
-        // Wait for the poison duration
         yield return new WaitForSeconds(poisonDuration);
-
-        // Kill Mario through GameManager (centralized death logic)
         if (GameManager.instance != null)
         {
             Debug.Log("Poison has killed Mario!");

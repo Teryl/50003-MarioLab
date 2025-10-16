@@ -18,7 +18,6 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    // called twice, when pressed and unpressed
     public void OnJumpAction(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -26,7 +25,6 @@ public class ActionManager : MonoBehaviour
             jump.Invoke();
         }
     }
-    // for the double jump
     public void OnDoublejumpAction(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -35,7 +33,6 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    // called twice, when pressed and unpressed
     public void OnMoveAction(InputAction.CallbackContext context)
     {
         if (context.started)

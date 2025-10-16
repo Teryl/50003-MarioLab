@@ -10,7 +10,6 @@ public class HUDManager : MonoBehaviour
 
     void Awake()
     {
-        // Subscribe to GameManager events
         if (GameManager.instance != null)
         {
             GameManager.instance.gameStart.AddListener(GameStart);
@@ -22,7 +21,6 @@ public class HUDManager : MonoBehaviour
 
     void Start()
     {
-        // Find UI elements if not assigned in inspector
         if (scoreText == null)
         {
             scoreText = GameObject.Find("ScoreText")?.GetComponent<TextMeshProUGUI>();
@@ -35,9 +33,6 @@ public class HUDManager : MonoBehaviour
         {
             finalScoreText = GameObject.Find("FinalScoreText")?.GetComponent<TextMeshProUGUI>();
         }
-
-        // Update score display with current score from GameManager
-        // This is important for scene transitions where the score should persist
         if (GameManager.instance != null)
         {
             UpdateScore(GameManager.instance.score);
@@ -46,7 +41,6 @@ public class HUDManager : MonoBehaviour
 
     public void GameStart()
     {
-        // Hide game over UI and update score display
         HideGameOver();
         if (GameManager.instance != null)
         {
@@ -56,16 +50,11 @@ public class HUDManager : MonoBehaviour
 
     public void OnGameRestart()
     {
-        // Hide game over UI
         HideGameOver();
-        
-        // Make sure score text is visible again
         if (scoreText != null)
         {
             scoreText.enabled = true;
         }
-        
-        // Reset score display
         if (GameManager.instance != null)
         {
             UpdateScore(GameManager.instance.score);
@@ -108,7 +97,6 @@ public class HUDManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // Unsubscribe from game events to prevent memory leaks
         if (GameManager.instance != null)
         {
             GameManager.instance.gameStart.RemoveListener(GameStart);
