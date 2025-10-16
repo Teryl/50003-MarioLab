@@ -14695,6 +14695,7 @@ MonoBehaviour:
   deathSequenceDelay: 2
   gameCamera: {fileID: 1236838895}
   backgroundMusic: {fileID: 409989961}
+  menuSFX: {fileID: 2172545373322609972}
 --- !u!4 &1292103403
 Transform:
   m_ObjectHideFlags: 0

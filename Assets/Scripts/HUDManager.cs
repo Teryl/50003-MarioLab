@@ -56,8 +56,16 @@ public class HUDManager : MonoBehaviour
 
     public void OnGameRestart()
     {
-        // Hide game over UI and reset score display
+        // Hide game over UI
         HideGameOver();
+        
+        // Make sure score text is visible again
+        if (scoreText != null)
+        {
+            scoreText.enabled = true;
+        }
+        
+        // Reset score display
         if (GameManager.instance != null)
         {
             UpdateScore(GameManager.instance.score);

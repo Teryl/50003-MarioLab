@@ -221,21 +221,11 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 Debug.Log("Player has touched an enemy.");
-                isAlive = false;
                 
-                // Stop all horizontal movement
-                marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
-                
-                // Play death animation and sound
-                marioAnimator.Play("mario_die");
-                marioAudio.PlayOneShot(marioDeath);
-                
-                // Give death impulse (Mario jumps up when dying)
-                GiveDeathImpulse();
-
+                // Let GameManager handle the death sequence
                 if (GameManager.instance != null)
                 {
-                    GameManager.instance.StartDeathSequence();
+                    GameManager.instance.KillPlayer();
                 }
             }
         }

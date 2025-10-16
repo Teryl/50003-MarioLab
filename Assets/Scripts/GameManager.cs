@@ -42,6 +42,7 @@ public class GameManager : Singleton<GameManager>
 
     [Header("Audio")]
     public AudioSource backgroundMusic;
+    public AudioSource menuSFX;
 
     private bool isDeathSequenceActive = false;
 
@@ -97,6 +98,46 @@ public class GameManager : Singleton<GameManager>
         if (scoreText != null)
         {
             scoreText.text = "Score: " + score.ToString();
+        }
+    }
+
+    // Centralized method to kill the player (called by enemies, poison mushrooms, etc.)
+    public void KillPlayer()
+    {
+        // Find the player in the current scene
+        PlayerMovement player = FindPlayerInScene();
+        if (player != null && player.isAlive)
+        {
+            Debug.Log("Player is being killed!");
+            
+            // Set player as dead
+            player.isAlive = false;
+            
+            // Get rigidbody
+            Rigidbody2D marioBody = player.GetComponent<Rigidbody2D>();
+            if (marioBody != null)
+            {
+                // Stop all horizontal movement
+                marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
+                
+                // Give death impulse (Mario jumps up when dying)
+                marioBody.AddForce(Vector2.up * player.deathImpulse, ForceMode2D.Impulse);
+            }
+            
+            // Play death animation
+            if (player.marioAnimator != null)
+            {
+                player.marioAnimator.Play("mario_die");
+            }
+            
+            // Play death sound
+            if (player.marioAudio != null && player.marioDeath != null)
+            {
+                player.marioAudio.PlayOneShot(player.marioDeath);
+            }
+            
+            // Start the death sequence (game over after delay)
+            StartDeathSequence();
         }
     }
 
@@ -247,8 +288,15 @@ public class GameManager : Singleton<GameManager>
         {
             if (coin != null)
             {
-                coin.gameObject.SetActive(true);
                 coin.ResetCoin();
+            }
+        }
+
+        foreach (PoisonMushroom mushroom in FindObjectsByType<PoisonMushroom>(FindObjectsSortMode.None))
+        {
+            if (mushroom != null)
+            {
+                mushroom.ResetMushroom();
             }
         }
     }
@@ -256,5 +304,6 @@ public class GameManager : Singleton<GameManager>
     public void RestartButtonCallback()
     {
         RestartGame();
+        menuSFX?.Play();
     }
 }
