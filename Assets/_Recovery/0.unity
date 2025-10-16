@@ -3684,20 +3684,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 831953818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9052089f5b52e40a485e0e0b61f48ddf, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c22091b8c93d40d1ba003d08a5bd836, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 20
   maxSpeed: 40
   upSpeed: 22
-  doubleJumpMultiplier: 0.8
   fallGravityMultiplier: 7.5
   lowJumpGravityPenalty: 8
   airTurnPenalty: 1.5
-  deathImpulse: 15
   marioAnimator: {fileID: 831953828}
-  marioAudio: {fileID: 831953829}
-  marioDeath: {fileID: 8300000, guid: f6865639a18bd449db87b611a9d290fc, type: 3}
+  GameOverUI: {fileID: 0}
+  finalScore: {fileID: 0}
+  scoreText: {fileID: 0}
 --- !u!50 &831953822
 Rigidbody2D:
   serializedVersion: 5
@@ -26161,9 +26160,6 @@ MonoBehaviour:
   gameStart:
     m_PersistentCalls:
       m_Calls: []
-  gameRestart:
-    m_PersistentCalls:
-      m_Calls: []
   scoreChanged:
     m_PersistentCalls:
       m_Calls:
@@ -27823,10 +27819,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4612490472410248105, guid: e677a5266f0f54b0dac479b2dc9bcd7f, type: 3}
-      propertyPath: nextSceneName
-      value: World 1-2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4612490472410248105, guid: e677a5266f0f54b0dac479b2dc9bcd7f, type: 3}
       propertyPath: destinationScene
       value: 
       objectReference: {fileID: 0}
@@ -27848,7 +27840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4612490472410248105, guid: e677a5266f0f54b0dac479b2dc9bcd7f, type: 3}
       propertyPath: onPortalEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnPortalEnter
+      value: ChangeToScene
       objectReference: {fileID: 0}
     - target: {fileID: 4612490472410248105, guid: e677a5266f0f54b0dac479b2dc9bcd7f, type: 3}
       propertyPath: onPortalEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

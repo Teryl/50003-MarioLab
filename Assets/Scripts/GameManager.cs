@@ -3,9 +3,16 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+    [Header("Unity Events")]
+    public UnityEvent gameStart;
+    public UnityEvent gameRestart;
+    public UnityEvent<int> scoreChanged;
+    public UnityEvent<int> gameOver;
+
     [Header("Score System")]
     public TextMeshProUGUI scoreText;
     public int score = 0;
@@ -38,20 +45,6 @@ public class GameManager : MonoBehaviour
 
     private bool isDeathSequenceActive = false;
 
-    public static GameManager Instance;
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     void Start()
     {
         InitializeGame();
@@ -61,11 +54,6 @@ public class GameManager : MonoBehaviour
     {
         UpdateScoreDisplay();
 
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);
-        }
-
         Time.timeScale = 1.0f;
 
         if (backgroundMusic != null && !backgroundMusic.isPlaying)
@@ -73,6 +61,8 @@ public class GameManager : MonoBehaviour
             backgroundMusic.Play();
         }
 
+        // Invoke game start event - HUDManager will handle hiding game over UI
+        gameStart?.Invoke();
     }
 
     public void OnEnemyDefeated()
@@ -80,10 +70,25 @@ public class GameManager : MonoBehaviour
         AddScore(5);
     }
 
+    public void OnPortalEnter(string sceneName)
+    {
+        // Load the specified scene in Single mode (replaces current scene)
+        if (!string.IsNullOrEmpty(sceneName))
+        {
+            Debug.Log("Loading scene: " + sceneName);
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        }
+        else
+        {
+            Debug.LogWarning("OnPortalEnter called with empty scene name!");
+        }
+    }
+
     public void AddScore(int points)
     {
         score += points;
         UpdateScoreDisplay();
+        scoreChanged?.Invoke(score);
         // Debug.Log("Score: " + score);
     }
 
@@ -101,20 +106,20 @@ public class GameManager : MonoBehaviour
         {
             isDeathSequenceActive = true;
 
+            // Stop background music immediately
             if (backgroundMusic != null && backgroundMusic.isPlaying)
             {
                 backgroundMusic.Stop();
             }
 
-            if (gameCamera != null)
+            // Find and disable camera movement in current scene
+            CameraMovement cameraMovement = FindFirstObjectByType<CameraMovement>();
+            if (cameraMovement != null)
             {
-                CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
-                if (cameraMovement != null)
-                {
-                    cameraMovement.enabled = false;
-                }
+                cameraMovement.enabled = false;
             }
 
+            // Start the death sequence coroutine
             StartCoroutine(DeathSequenceCoroutine());
         }
     }
@@ -132,64 +137,74 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 0.0f;
 
-        if (finalScoreText != null)
+        // Invoke game over event - HUDManager will handle the UI
+        gameOver?.Invoke(score);
+    }
+
+    // Helper method to find the player in the current scene
+    private PlayerMovement FindPlayerInScene()
+    {
+        // Try to find by tag first (most reliable)
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
         {
-            finalScoreText.text = "Score: " + score.ToString();
+            return playerObject.GetComponent<PlayerMovement>();
         }
 
-        if (gameOverUI != null)
+        // Fallback: search for PlayerMovement component in scene
+        PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
+        if (player != null)
         {
-            gameOverUI.SetActive(true);
+            return player;
         }
 
-        if (scoreText != null)
-        {
-            scoreText.text = "";
-        }
+        return null;
     }
 
     public void RestartGame()
     {
         // Debug.Log("Restart!");
 
+        // Stop all coroutines and reset death sequence flag
         StopAllCoroutines();
         isDeathSequenceActive = false;
 
+        // Reset time scale first (important for animations and physics)
         Time.timeScale = 1.0f;
 
-        score = 0;
-        UpdateScoreDisplay();
-
-        if (playerMovement != null)
+        // Find and reset camera in current scene
+        CameraMovement cameraMovement = FindFirstObjectByType<CameraMovement>();
+        if (cameraMovement != null)
         {
-            playerMovement.ResetPlayer();
+            cameraMovement.enabled = true;
+            cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
         }
 
+        // Find and reset the player in the current scene
+        PlayerMovement currentPlayer = FindPlayerInScene();
+        if (currentPlayer != null)
+        {
+            currentPlayer.ResetPlayer();
+        }
+        else
+        {
+            Debug.LogWarning("Could not find player in current scene to reset!");
+        }
+
+        // Reset all game objects
         ResetEnemies();
-
         ResetMysteryBoxes();
-
         ResetCollectibles();
 
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);
-        }
+        // Reset score
+        score = 0;
+        UpdateScoreDisplay();
+        scoreChanged?.Invoke(score);
 
-        if (gameCamera != null)
-        {
-            CameraMovement cameraMovement = gameCamera.GetComponent<CameraMovement>();
-            if (cameraMovement != null)
-            {
-                cameraMovement.enabled = true;
-                cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
-            }
-            else
-            {
-                gameCamera.position = new Vector3(0, 4.5f, -10);
-            }
-        }
+        // Invoke game restart event for any listeners
+        gameRestart?.Invoke();
 
+        // Restart background music
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
@@ -199,43 +214,38 @@ public class GameManager : MonoBehaviour
 
     void ResetEnemies()
     {
-        if (enemies != null)
+        // Find all EnemyMovement components in the current scene
+        EnemyMovement[] allEnemies = FindObjectsByType<EnemyMovement>(FindObjectsSortMode.None);
+        foreach (EnemyMovement enemy in allEnemies)
         {
-            foreach (Transform eachChild in enemies.transform)
+            if (enemy != null)
             {
-                EnemyMovement enemyMovement = eachChild.GetComponent<EnemyMovement>();
-                if (enemyMovement != null)
-                {
-                    eachChild.gameObject.SetActive(true);
-                    enemyMovement.ResetEnemy();
-                }
+                enemy.gameObject.SetActive(true);
+                enemy.ResetEnemy();
             }
         }
     }
 
     void ResetMysteryBoxes()
     {
-        if (mysteryBoxes != null)
+        // Find all MysteryBox components in the current scene
+        MysteryBox[] allMysteryBoxes = FindObjectsByType<MysteryBox>(FindObjectsSortMode.None);
+        foreach (MysteryBox mysteryBox in allMysteryBoxes)
         {
-            MysteryBox[] allMysteryBoxes = mysteryBoxes.GetComponentsInChildren<MysteryBox>();
-
-            foreach (MysteryBox mysteryBox in allMysteryBoxes)
+            if (mysteryBox != null)
             {
-                if (mysteryBox != null)
-                {
-                    mysteryBox.ResetMysteryBox();
-                }
+                mysteryBox.ResetMysteryBox();
             }
         }
     }
 
     void ResetCollectibles()
     {
-        if (collectibles != null)
+        // Find all CoinController components in the current scene
+        CoinController[] allCoins = FindObjectsByType<CoinController>(FindObjectsSortMode.None);
+        foreach (CoinController coin in allCoins)
         {
-            CoinController[] allCoins = collectibles.GetComponentsInChildren<CoinController>();
-
-            foreach (CoinController coin in allCoins)
+            if (coin != null)
             {
                 coin.gameObject.SetActive(true);
                 coin.ResetCoin();

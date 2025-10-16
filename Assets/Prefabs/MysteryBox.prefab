@@ -296,7 +296,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9032401273802444116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40324cefd2bec5b4e89e8e58486759ba, type: 3}
+  m_Script: {fileID: 11500000, guid: e52b41c84ce414afeab0a4d5068a6c4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MysteryBox
   boxAnimator: {fileID: 3142892814566621684}

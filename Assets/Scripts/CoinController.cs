@@ -41,9 +41,9 @@ public class CoinController : MonoBehaviour
         {
             isCollected = true;
 
-            if (GameManager.Instance != null)
+            if (GameManager.instance != null)
             {
-                GameManager.Instance.AddScore(1);
+                GameManager.instance.AddScore(1);
             }
 
             GetComponent<SpriteRenderer>().enabled = false;

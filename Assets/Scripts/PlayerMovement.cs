@@ -47,6 +47,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void ResetPlayer()
     {
+        // reset physics - CRITICAL: stop all movement first
+        marioBody.linearVelocity = Vector2.zero;
+        marioBody.angularVelocity = 0f;
+        marioBody.gravityScale = originalGravityScale;
+
         // reset position
         marioBody.transform.position = startPosition;
 
@@ -217,13 +222,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.Log("Player has touched an enemy.");
                 isAlive = false;
+                
+                // Stop all horizontal movement
+                marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
+                
+                // Play death animation and sound
                 marioAnimator.Play("mario_die");
                 marioAudio.PlayOneShot(marioDeath);
+                
+                // Give death impulse (Mario jumps up when dying)
                 GiveDeathImpulse();
 
-                if (GameManager.Instance != null)
+                if (GameManager.instance != null)
                 {
-                    GameManager.Instance.StartDeathSequence();
+                    GameManager.instance.StartDeathSequence();
                 }
             }
         }
@@ -250,14 +262,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void restartButtonCallback()
     {
-        if (GameManager.Instance != null)
+        if (GameManager.instance != null)
         {
-            GameManager.Instance.RestartGame();
+            GameManager.instance.RestartGame();
         }
     }
     void FixedUpdate() // note: called 50 times per second
     {
-        if (!isAlive) return;
+        if (!isAlive) 
+        {
+            // During death, allow gravity to work but prevent any input-based movement
+            return;
+        }
 
         // movement
         if (moving)
