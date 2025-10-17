@@ -8,44 +8,39 @@ This project is a collection of progressively complex labs that build Super Mari
 | Mithunbalaji Mageswari Ganeshkumar  | 1007494     |
 
 
-## Lab 3: Unity for Toddlers
-This lab focused on the Input System, Observer Pattern, Audio Management and SFX, and also updating the Points mechanic.
+## Lab 4: Unity for Children
+This lab focused on more player feedback, extra scenes, and Mario's power-ups.
 
-#### In this git repo, **lab3** will be the *Main Submission repository*.
+#### In this git repo, **lab4** will be the *Main Submission repository*.
 
 ### Additional features
-#### Character Updates
-- Added Double Jump for Mario
-  - When jumping, Mario can jump again while he is in mid-air. This double jump is added so Mario can access high blocks easily
-- Added the ability to kill Goomba by stomping it
-  - When Mario jumps on top of Goomba, he will now kill the Goomba instead of dying
+#### Level Progression
+- Added World 1-2 (second level)
+  - Added progression to the second level, with more challenges and an option to gain more points
+- Added The Portal
+  - When Mario goes in it, he will be teleported to the second level.
 
 #### Points System
-- Added stomping Goomba
-  - Mario needs to kill Goomba in order to gain points by jumping on top of the Goomba (stomping it)
-  - This will give more points compared to just collecting the coins
-  - Added Goomba spawner, so Mario can score more big points
-- Removed jumping over Goomba to gain points
+- Added more ways to gain points (enemies and obtainables)
 
 #### Audio
-- Added Audio Mixer into the project
-- Added SFX when performing a Double jump
-- Added SFX when stomping on Goomba
+- Added additional sound effects to enhance the gameplay
 
-#### Input System
-- Implemented new Input System
-  - Updated the Input system to use InputActions
+#### Interactibles
+- Added Cancer Mushrooms
+  - This interactable will cause Mario to start dying, with Cancer. He will have 5 seconds after the interaction to enjoy his beautiful life.
 
-#### Observer Pattern
-- Implemented the Observer Pattern in our code
-  - Used UnityEvents to call the functions
-  - Added ActionManager.cs for callbacks
+#### Singleton Pattern
+- Implemented the Singleton Pattern in our code.
+
+#### Scriptable Objects
+- Implemented some Scriptable objects in our code.
 
 ## Videos
-**[Lab 3 - Main Submission](https://tinyurl.com/taks4kzf)**
+**[Lab 4 - Main Submission](https://tinyurl.com/yuscmhkt)**
 > Gameplay video is inside this link
 
 ## Detailed Report
-**[https://tinyurl.com/5b9abcra](https://tinyurl.com/5b9abcra)**
-> Lab 3 Full Documentation
+**[https://tinyurl.com/5b9abcra](https://tinyurl.com/s53dnm5v)**
+> Lab 4 Full Documentation
 
