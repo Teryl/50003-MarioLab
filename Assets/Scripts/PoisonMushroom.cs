@@ -71,10 +71,12 @@ public class PoisonMushroom : MonoBehaviour
         
         Debug.Log("Mario has been poisoned! Death in " + poisonDuration + " seconds...");
         yield return new WaitForSeconds(poisonDuration);
-        if (GameManager.instance != null)
+
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
         {
             Debug.Log("Poison has killed Mario!");
-            GameManager.instance.KillPlayer();
+            gameManager.KillPlayer();
         }
     }
 

@@ -200,9 +200,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.Log("Player has touched an enemy.");
                 
-                if (GameManager.instance != null)
+                GameManager gameManager = FindFirstObjectByType<GameManager>();
+                if (gameManager != null)
                 {
-                    GameManager.instance.KillPlayer();
+                    gameManager.KillPlayer();
                 }
             }
         }
@@ -227,9 +228,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void restartButtonCallback()
     {
-        if (GameManager.instance != null)
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
         {
-            GameManager.instance.RestartGame();
+            gameManager.RestartGame();
         }
     }
     void FixedUpdate()

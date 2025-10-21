@@ -4,9 +4,10 @@ public class ButtonController : MonoBehaviour
 {
     public void ButtonClick()
     {
-        if (GameManager.instance != null)
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
         {
-            GameManager.instance.RestartButtonCallback();
+            gameManager.RestartButtonCallback();
         }
     }
 }

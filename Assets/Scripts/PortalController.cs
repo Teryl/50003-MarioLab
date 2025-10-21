@@ -10,11 +10,12 @@ public class PortalController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (GameManager.instance != null)
+            GameManager gameManager = FindFirstObjectByType<GameManager>();
+            if (gameManager != null)
             {
                 if (!string.IsNullOrEmpty(nextSceneName))
                 {
-                    GameManager.instance.OnPortalEnter(nextSceneName);
+                    gameManager.OnPortalEnter(nextSceneName);
                 }
                 else
                 {

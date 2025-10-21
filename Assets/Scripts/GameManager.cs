@@ -5,25 +5,26 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviour
 {
     [Header("ScriptableObject Events")]
-    public GameEvent onGameStart;
-    public GameEvent onGameRestart;
+    public SimpleGameEvent onGameStart;
+    public SimpleGameEvent onGameRestart;
     public IntGameEvent onScoreChanged;
     public IntGameEvent onGameOver;
 
-    [Header("Legacy Unity Events (for backward compatibility)")]
-    public UnityEvent gameStart;
-    public UnityEvent gameRestart;
-    public UnityEvent<int> scoreChanged;
-    public UnityEvent<int> gameOver;
+    [Header("ScriptableObject Variables")]
+    public IntVariable gameScore;
 
-    [Header("Score System")]
+    // [Header("Legacy Unity Events (for backward compatibility)")]
+    // public UnityEvent gameStart;
+    // public UnityEvent gameRestart;
+    // public UnityEvent<int> scoreChanged;
+    // public UnityEvent<int> gameOver;
+
+    [Header("UI")]
     public TextMeshProUGUI scoreText;
-    public int score = 0;
-
-    [Header("Game Over")]
+    // public int score = 0;
     public GameObject gameOverUI;
     public TextMeshProUGUI finalScoreText;
 
@@ -31,26 +32,25 @@ public class GameManager : Singleton<GameManager>
     public PlayerMovement playerMovement;
     public Transform playerStartPosition;
 
-    [Header("Enemy References")]
-    public GameObject enemies;
+    // [Header("Enemy References")]
+    // public GameObject enemies;
 
-    [Header("Mystery Boxes")]
-    public GameObject mysteryBoxes;
+    // [Header("Mystery Boxes")]
+    // public GameObject mysteryBoxes;
 
-    [Header("Collectibles")]
-    public GameObject collectibles;
+    // [Header("Collectibles")]
+    // public GameObject collectibles;
 
     [Header("Death Sequence")]
     [SerializeField] private float deathSequenceDelay = 2.0f;
+    private bool isDeathSequenceActive = false;
 
     [Header("Camera")]
     public Transform gameCamera;
 
     [Header("Audio")]
     public AudioSource backgroundMusic;
-    public AudioSource menuSFX;
-
-    private bool isDeathSequenceActive = false;
+    // public AudioSource menuSFX;
 
     void Start()
     {
@@ -72,7 +72,6 @@ public class GameManager : Singleton<GameManager>
         {
             onGameStart.Raise();
         }
-        gameStart?.Invoke();
     }
 
     public void OnEnemyDefeated()
@@ -95,20 +94,23 @@ public class GameManager : Singleton<GameManager>
 
     public void AddScore(int points)
     {
-        score += points;
-        UpdateScoreDisplay();
-        if (onScoreChanged != null)
+        if (gameScore != null)
         {
-            onScoreChanged.Raise(score);
+            gameScore.Add(points);
+            UpdateScoreDisplay();
+            
+            if (onScoreChanged != null)
+            {
+                onScoreChanged.Raise(gameScore.Value);
+            }
         }
-        scoreChanged?.Invoke(score);
     }
 
     void UpdateScoreDisplay()
     {
-        if (scoreText != null)
+        if (scoreText != null && gameScore != null)
         {
-            scoreText.text = "Score: " + score.ToString();
+            scoreText.text = "Score: " + gameScore.Value.ToString();
         }
     }
 
@@ -122,21 +124,26 @@ public class GameManager : Singleton<GameManager>
             {
                 backgroundMusic.Stop();
             }
+
             player.isAlive = false;
             Rigidbody2D marioBody = player.GetComponent<Rigidbody2D>();
+
             if (marioBody != null)
             {
                 marioBody.linearVelocity = new Vector2(0, marioBody.linearVelocity.y);
                 marioBody.AddForce(Vector2.up * player.deathImpulse, ForceMode2D.Impulse);
             }
+
             if (player.marioAnimator != null)
             {
                 player.marioAnimator.Play("mario_die");
             }
+
             if (player.marioAudio != null && player.marioDeath != null)
             {
                 player.marioAudio.PlayOneShot(player.marioDeath);
             }
+
             StartDeathSequence();
         }
     }
@@ -169,11 +176,11 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         Time.timeScale = 0.0f;
-        if (onGameOver != null)
+        
+        if (onGameOver != null && gameScore != null)
         {
-            onGameOver.Raise(score);
+            onGameOver.Raise(gameScore.Value);
         }
-        gameOver?.Invoke(score);
     }
 
     private PlayerMovement FindPlayerInScene()
@@ -183,12 +190,7 @@ public class GameManager : Singleton<GameManager>
         {
             return playerObject.GetComponent<PlayerMovement>();
         }
-        PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
-        if (player != null)
-        {
-            return player;
-        }
-        return null;
+        return FindFirstObjectByType<PlayerMovement>();
     }
 
     public void RestartGame()
@@ -197,35 +199,39 @@ public class GameManager : Singleton<GameManager>
         isDeathSequenceActive = false;
         Time.timeScale = 1.0f;
         CameraMovement cameraMovement = FindFirstObjectByType<CameraMovement>();
+
         if (cameraMovement != null)
         {
             cameraMovement.enabled = true;
             cameraMovement.ResetCamera(new Vector3(0, 4.5f, -10));
         }
+        
         PlayerMovement currentPlayer = FindPlayerInScene();
         if (currentPlayer != null)
         {
             currentPlayer.ResetPlayer();
         }
-        else
-        {
-            Debug.LogWarning("Could not find player in current scene to reset!");
-        }
+
         ResetEnemies();
         ResetMysteryBoxes();
         ResetCollectibles();
-        score = 0;
-        UpdateScoreDisplay();
-        if (onScoreChanged != null)
+
+        if (gameScore != null)  // reset score
         {
-            onScoreChanged.Raise(score);
+            gameScore.SetValue(0);
+            UpdateScoreDisplay();
+            
+            if (onScoreChanged != null)
+            {
+                onScoreChanged.Raise(gameScore.Value);
+            }
         }
-        scoreChanged?.Invoke(score);
+
         if (onGameRestart != null)
         {
             onGameRestart.Raise();
         }
-        gameRestart?.Invoke();
+
         if (backgroundMusic != null)
         {
             backgroundMusic.Stop();
@@ -268,7 +274,9 @@ public class GameManager : Singleton<GameManager>
                 coin.ResetCoin();
             }
         }
-        foreach (PoisonMushroom mushroom in FindObjectsByType<PoisonMushroom>(FindObjectsSortMode.None))
+
+        PoisonMushroom[] allMushrooms = FindObjectsByType<PoisonMushroom>(FindObjectsSortMode.None);
+        foreach (PoisonMushroom mushroom in allMushrooms)
         {
             if (mushroom != null)
             {
@@ -280,29 +288,29 @@ public class GameManager : Singleton<GameManager>
     public void RestartButtonCallback()
     {
         RestartGame();
-        AudioSource currentMenuSFX = FindMenuSFXInScene();
-        if (currentMenuSFX != null)
-        {
-            currentMenuSFX.Play();
-        }
+        // AudioSource currentMenuSFX = FindMenuSFXInScene();
+        // if (currentMenuSFX != null)
+        // {
+        //     currentMenuSFX.Play();
+        // }
     }
 
-    private AudioSource FindMenuSFXInScene()
-    {
-        GameObject menuSFXObject = GameObject.Find("MenuSFX");
-        if (menuSFXObject != null)
-        {
-            AudioSource audio = menuSFXObject.GetComponent<AudioSource>();
-            if (audio != null)
-            {
-                return audio;
-            }
-        }
-        GameObject taggedObject = GameObject.FindGameObjectWithTag("MenuSFX");
-        if (taggedObject != null)
-        {
-            return taggedObject.GetComponent<AudioSource>();
-        }
-        return null;
-    }
+    // private AudioSource FindMenuSFXInScene()
+    // {
+    //     GameObject menuSFXObject = GameObject.Find("MenuSFX");
+    //     if (menuSFXObject != null)
+    //     {
+    //         AudioSource audio = menuSFXObject.GetComponent<AudioSource>();
+    //         if (audio != null)
+    //         {
+    //             return audio;
+    //         }
+    //     }
+    //     GameObject taggedObject = GameObject.FindGameObjectWithTag("MenuSFX");
+    //     if (taggedObject != null)
+    //     {
+    //         return taggedObject.GetComponent<AudioSource>();
+    //     }
+    //     return null;
+    // }
 }

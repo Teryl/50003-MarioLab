@@ -8,16 +8,19 @@ public class HUDManager : MonoBehaviour
     public GameObject gameOverUI;
     public TextMeshProUGUI finalScoreText;
 
-    void Awake()
-    {
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.gameStart.AddListener(GameStart);
-            GameManager.instance.gameRestart.AddListener(OnGameRestart);
-            GameManager.instance.scoreChanged.AddListener(UpdateScore);
-            GameManager.instance.gameOver.AddListener(ShowGameOver);
-        }
-    }
+    [Header("ScriptableObject Variables")]
+    public IntVariable gameScore;
+
+    // void Awake()
+    // {
+    //     if (GameManager.instance != null)
+    //     {
+    //         GameManager.instance.gameStart.AddListener(GameStart);
+    //         GameManager.instance.gameRestart.AddListener(OnGameRestart);
+    //         GameManager.instance.scoreChanged.AddListener(UpdateScore);
+    //         GameManager.instance.gameOver.AddListener(ShowGameOver);
+    //     }
+    // }
 
     void Start()
     {
@@ -25,26 +28,33 @@ public class HUDManager : MonoBehaviour
         {
             scoreText = GameObject.Find("ScoreText")?.GetComponent<TextMeshProUGUI>();
         }
+
         if (gameOverUI == null)
         {
             gameOverUI = GameObject.Find("GameOverUI");
         }
+
         if (finalScoreText == null)
         {
             finalScoreText = GameObject.Find("FinalScoreText")?.GetComponent<TextMeshProUGUI>();
         }
-        if (GameManager.instance != null)
+        // if (GameManager.instance != null)
+        // {
+        //     UpdateScore(GameManager.instance.score);
+        // }
+        HideGameOver();
+        if (gameScore != null)
         {
-            UpdateScore(GameManager.instance.score);
+            UpdateScore(gameScore.Value);
         }
     }
 
-    public void GameStart()
+    public void OnGameStart()
     {
         HideGameOver();
-        if (GameManager.instance != null)
+        if (gameScore != null)
         {
-            UpdateScore(GameManager.instance.score);
+            UpdateScore(gameScore.Value);
         }
     }
 
@@ -55,9 +65,9 @@ public class HUDManager : MonoBehaviour
         {
             scoreText.enabled = true;
         }
-        if (GameManager.instance != null)
+        if (gameScore != null)
         {
-            UpdateScore(GameManager.instance.score);
+            UpdateScore(gameScore.Value);
         }
     }
 
@@ -95,14 +105,14 @@ public class HUDManager : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.gameStart.RemoveListener(GameStart);
-            GameManager.instance.gameRestart.RemoveListener(OnGameRestart);
-            GameManager.instance.scoreChanged.RemoveListener(UpdateScore);
-            GameManager.instance.gameOver.RemoveListener(ShowGameOver);
-        }
-    }
+    // void OnDestroy()
+    // {
+    //     if (GameManager.instance != null)
+    //     {
+    //         GameManager.instance.gameStart.RemoveListener(GameStart);
+    //         GameManager.instance.gameRestart.RemoveListener(OnGameRestart);
+    //         GameManager.instance.scoreChanged.RemoveListener(UpdateScore);
+    //         GameManager.instance.gameOver.RemoveListener(ShowGameOver);
+    //     }
+    // }
 }

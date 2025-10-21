@@ -14,6 +14,13 @@ public class CameraMovement : MonoBehaviour
     public Transform topLimit;
     public bool useBoundaries = true;
 
+    private Vector3 startPosition;
+
+    void Start()
+    {
+        startPosition = transform.position;
+    }
+    
     void FixedUpdate()
     {
         if (target != null)
@@ -44,5 +51,10 @@ public class CameraMovement : MonoBehaviour
     {
         transform.position = position;
         velocity = Vector3.zero;
+    }
+
+    public void OnGameRestart()
+    {
+        ResetCamera(startPosition);
     }
 }

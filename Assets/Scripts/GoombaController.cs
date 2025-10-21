@@ -12,7 +12,12 @@ public class GoombaController : MonoBehaviour
     void Start()
     {
         enemyMovement = GetComponent<EnemyMovement>();
-        onDeath.AddListener(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().OnEnemyDefeated);
+        
+        GameManager gameManager = FindFirstObjectByType<GameManager>();
+        if (gameManager != null)
+        {
+            onDeath.AddListener(gameManager.OnEnemyDefeated);
+        }
     }   
 
     public void TakeStomp()
