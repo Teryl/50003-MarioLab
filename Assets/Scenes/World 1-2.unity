@@ -638,6 +638,8 @@ GameObject:
   - component: {fileID: 221384260}
   - component: {fileID: 221384259}
   - component: {fileID: 221384258}
+  - component: {fileID: 221384265}
+  - component: {fileID: 221384266}
   - component: {fileID: 221384257}
   - component: {fileID: 221384256}
   m_Layer: 0
@@ -1102,6 +1104,55 @@ Transform:
   - {fileID: 1008820396}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &221384265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221384255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e205e80ceadd04141b551cbe886085ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarioStateController
+  startState: {fileID: 11400000, guid: 66723648801d5b2488844eb211508b1f, type: 2}
+  previousState: {fileID: 0}
+  currentState: {fileID: 11400000, guid: 66723648801d5b2488844eb211508b1f, type: 2}
+  remainState: {fileID: 11400000, guid: e83d88a9e4a257c42922ec559a6d437e, type: 2}
+  transitionStateChanged: 0
+  stateTimeElapsed: 0
+  isActive: 1
+  currentPowerupType: -1
+  shouldBeNextState: -1
+--- !u!114 &221384266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221384255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71cc98657881dd943be910d5f4dcbb89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleGameEventListener
+  Event: {fileID: 11400000, guid: 644a993156a132c41afb0a7f7f2b926f, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 221384265}
+        m_TargetAssemblyTypeName: MarioStateController, Assembly-CSharp
+        m_MethodName: GameRestart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &251892237 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7172459282881011662, guid: f4a320d7e63e8493586dd330635db44c, type: 3}

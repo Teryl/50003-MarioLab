@@ -7,38 +7,36 @@ public class PoisonMushroom : MonoBehaviour
     private AudioSource audioSource;
     private bool isCollected = false;
 
-    [Header("Settings")]
-    public bool boxCollectible = false;
-    public float bounceForce = 5f;
+    [Header("Movement")]
+    public float moveSpeed = 2f;
+    private int direction = 1;
 
     [Header("Poison Settings")]
     public float poisonDuration = 5f;
     public AudioClip poisonCollectSound;
+    public State invincibleSmallMarioState;
 
-    private bool isPoisonActive = false;
+    private Vector3 startPosition;
+    private bool startPositionSet = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
 
-        if (!boxCollectible)
+        if (!startPositionSet)
         {
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        }
-        else
-        {
-            rb.AddForce(new Vector2(0, bounceForce), ForceMode2D.Impulse);
+            startPosition = transform.position;
+            startPositionSet = true;
         }
     }
-
-    public void ResetMushroom()
+    
+    void FixedUpdate()
     {
-        isCollected = false;
-        isPoisonActive = false;
-        StopAllCoroutines();
-        GetComponent<SpriteRenderer>().enabled = true;
-        GetComponent<Collider2D>().enabled = true;
+        if (!isCollected && rb != null)
+        {
+            rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -46,38 +44,76 @@ public class PoisonMushroom : MonoBehaviour
         if (other.CompareTag("Player") && !isCollected)
         {
             isCollected = true;
+
             if (audioSource != null && poisonCollectSound != null)
             {
+                Debug.Log("Mario touches the Mushroom!");
                 audioSource.PlayOneShot(poisonCollectSound);
             }
+
+            MarioStateController marioStateController = other.GetComponent<MarioStateController>();
+            if (marioStateController == null)
+            {
+                marioStateController = other.GetComponentInParent<MarioStateController>();
+            }
+
+            if (marioStateController != null)
+            {
+                Debug.Log("Mario now has Cancer that is killing him!");
+                marioStateController.SetPowerup(PowerupType.Damage);
+
+               if (invincibleSmallMarioState != null)
+                {
+                    marioStateController.TransitionToState(invincibleSmallMarioState);
+                }
+            }
+
             GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<Collider2D>().enabled = false;
-            if (!isPoisonActive)
+
+            if (rb != null)
             {
-                StartCoroutine(PoisonCountdown());
+                rb.linearVelocity = Vector2.zero;
+                rb.simulated = false;
             }
         }
-
-        if (other.CompareTag("Platform") && boxCollectible)
+    }
+    
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform"))
         {
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            Destroy(gameObject, 5f);
+            foreach (ContactPoint2D contact in collision.contacts)
+            {
+                if (Mathf.Abs(contact.normal.x) > 0.5f)
+                {
+                    direction *= -1;
+                    break;
+                }
+            }
         }
     }
 
-    IEnumerator PoisonCountdown()
+    public void ResetMushroom()
     {
-        isPoisonActive = true;
-        
-        Debug.Log("Mario has been poisoned! Death in " + poisonDuration + " seconds...");
-        yield return new WaitForSeconds(poisonDuration);
+        isCollected = false;
 
-        GameManager gameManager = FindFirstObjectByType<GameManager>();
-        if (gameManager != null)
+        if (startPositionSet)
         {
-            Debug.Log("Poison has killed Mario!");
-            gameManager.KillPlayer();
+            transform.position = startPosition;
         }
+
+        GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<Collider2D>().enabled = true;
+
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        direction = 1;
+        StopAllCoroutines();
     }
 
     void OnDestroy()
