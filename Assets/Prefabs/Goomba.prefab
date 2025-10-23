@@ -191,7 +191,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   maxDistance: 5
   speed: 2
-  isDefeated: 0
+  raycastDistance: 0.8
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!95 &5731211704468793139
 Animator:
   serializedVersion: 7

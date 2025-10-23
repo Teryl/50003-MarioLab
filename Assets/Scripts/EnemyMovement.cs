@@ -11,15 +11,26 @@ public class EnemyMovement : MonoBehaviour
     private Vector2 velocity;
 
     private Rigidbody2D enemyBody;
+    
+    [Header("Raycast Settings")]
+    public float raycastDistance = 1f;
+    public LayerMask obstacleLayerMask = -1;
 
     [System.NonSerialized]
     public Vector3 startPosition;
+    
+    [System.NonSerialized]
     public bool isDefeated = false;
     void Start()
     {
         enemyBody = GetComponent<Rigidbody2D>();
         originalX = transform.position.x;
         startPosition = transform.position;
+        
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        int obstacleLayer = LayerMask.NameToLayer("Obstacles");
+        obstacleLayerMask = (1 << groundLayer) | (1 << obstacleLayer);
+        
         ComputeVelocity();
     }
 
@@ -44,19 +55,36 @@ public class EnemyMovement : MonoBehaviour
         enemyBody.MovePosition(enemyBody.position + velocity * Time.fixedDeltaTime);
     }
 
+    bool CheckForObstacle()
+    {
+        Vector2 rayDirection = movingRight ? Vector2.right : Vector2.left;
+        Vector2 rayOrigin = transform.position;
+        
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, raycastDistance, obstacleLayerMask);
+        return hit.collider != null;
+    }
+
     void FixedUpdate()
     {
-        if (movingRight && transform.position.x >= originalX + maxDistance)
+        bool hitObstacle = CheckForObstacle();
+        bool reachedMaxDistance = (movingRight && transform.position.x >= originalX + maxDistance) || 
+                                 (!movingRight && transform.position.x <= originalX - maxDistance);
+        
+        if (hitObstacle || reachedMaxDistance)
         {
-            movingRight = false;
+            movingRight = !movingRight;
             ComputeVelocity();
         }
-        else if (!movingRight && transform.position.x <= originalX - maxDistance)
-        {
-            movingRight = true;
-            ComputeVelocity();
-        }
+        
         MoveGoomba();
     }
 
+    void OnDrawGizmos()
+    {
+        Vector2 rayDirection = movingRight ? Vector2.right : Vector2.left;
+        Vector2 rayOrigin = transform.position;
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(rayOrigin, rayDirection * raycastDistance);
+    }
 }
